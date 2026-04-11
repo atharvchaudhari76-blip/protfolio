@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Projects | Atharv{% endblock %}
+{% block meta_description %}Browse Atharv's portfolio of web development projects — from full-stack apps to creative UI experiments.{% endblock %}
+
+{% block content %}
+<!-- Page Hero -->
+<section class="page-hero">
+    <div class="section-container">
+        <span class="section-tag animate-fade-up">Portfolio</span>
+        <h1 class="page-hero-title animate-fade-up delay-1">My <span class="gradient-text">Projects</span></h1>
+        <p class="page-hero-subtitle animate-fade-up delay-2">A curated collection of my recent work</p>
+    </div>
+</section>
+
+<!-- Filter Tabs -->
+<section class="section projects-section">
+    <div class="section-container">
+        <div class="filter-tabs">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="web">Web Apps</button>
+            <button class="filter-btn" data-filter="ui">UI/UX</button>
+            <button class="filter-btn" data-filter="other">Other</button>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="projects-grid">
+            <div class="project-card" data-category="web">
+                <div class="project-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="project-overlay">
+                        <div class="project-actions">
+                            <a href="#" class="project-action-btn" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="#" class="project-action-btn" aria-label="View Code"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                    <span class="project-badge">Featured</span>
+                </div>
+                <div class="project-info">
+                    <h3>E-Commerce Platform</h3>
+                    <p>A full-stack e-commerce solution with real-time inventory management, payment processing, and admin dashboard.</p>
+                    <div class="project-tech">
+                        <span>React</span><span>Node.js</span><span>MongoDB</span><span>Stripe</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="web">
+                <div class="project-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="project-overlay">
+                        <div class="project-actions">
+                            <a href="#" class="project-action-btn" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="#" class="project-action-btn" aria-label="View Code"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>Analytics Dashboard</h3>
+                    <p>Real-time data visualization dashboard with interactive charts, filtering, and export capabilities.</p>
+                    <div class="project-tech">
+                        <span>Python</span><span>D3.js</span><span>Flask</span><span>PostgreSQL</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="ui">
+                <div class="project-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="project-overlay">
+                        <div class="project-actions">
+                            <a href="#" class="project-action-btn" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="#" class="project-action-btn" aria-label="View Code"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>Weather App</h3>
+                    <p>Beautiful weather application with location-based forecasts, animated backgrounds, and hourly breakdowns.</p>
+                    <div class="project-tech">
+                        <span>JavaScript</span><span>OpenWeather API</span><span>CSS Animations</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="web">
+                <div class="project-image" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="project-overlay">
+                        <div class="project-actions">
+                            <a href="#" class="project-action-btn" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="#" class="project-action-btn" aria-label="View Code"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>Task Management App</h3>
+                    <p>Collaborative task manager with drag-and-drop boards, real-time sync, and team workspaces.</p>
+                    <div class="project-tech">
+                        <span>React</span><span>Firebase</span><span>Material UI</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="ui">
+                <div class="project-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                    <div class="project-overlay">
+                        <div class="project-actions">
+                            <a href="#" class="project-action-btn" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="#" class="project-action-btn" aria-label="View Code"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>Social Media UI Kit</h3>
+                    <p>A comprehensive UI kit for social media applications with reusable components and dark mode support.</p>
+                    <div class="project-tech">
+                        <span>Figma</span><span>React</span><span>Styled Components</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="other">
+                <div class="project-image" style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);">
+                    <div class="project-overlay">
+                        <div class="project-actions">
+                            <a href="#" class="project-action-btn" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="#" class="project-action-btn" aria-label="View Code"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>CLI Productivity Tool</h3>
+                    <p>A command-line tool for automating daily developer workflows including git, deployments, and monitoring.</p>
+                    <div class="project-tech">
+                        <span>Python</span><span>Click</span><span>Rich</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
