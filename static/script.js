@@ -10,16 +10,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const particleContainer = document.getElementById('bgParticles');
     if (particleContainer) {
         // Generate twinkling stars
-        const starCount = 100;
+        const starCount = 150;
+        const starColors = ['#ffffff', '#00f0ff', '#9d4edd', '#fff4e6'];
+        
         for (let i = 0; i < starCount; i++) {
             const star = document.createElement('span');
             star.classList.add('star');
             star.style.left = Math.random() * 100 + '%';
             star.style.top = Math.random() * 100 + '%';
-            star.style.width = star.style.height = (Math.random() * 2.5 + 0.5) + 'px';
-            star.style.animationDuration = (Math.random() * 3 + 1) + 's';
-            star.style.animationDelay = (Math.random() * 3) + 's';
-            star.style.opacity = Math.random();
+            star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            star.style.animationDelay = (Math.random() * 5) + 's';
+            star.style.backgroundColor = starColors[Math.floor(Math.random() * starColors.length)];
+            star.style.opacity = Math.random() * 0.7 + 0.3;
             particleContainer.appendChild(star);
         }
 
@@ -162,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         },
-        { threshold: 0.5 }
+        { threshold: 0.1 }
     );
 
     skillFills.forEach(el => skillObserver.observe(el));
