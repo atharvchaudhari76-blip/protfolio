@@ -5,19 +5,34 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     // ----------------------------------------
-    // Background Particles
+    // Background Particles (Starfield)
     // ----------------------------------------
     const particleContainer = document.getElementById('bgParticles');
     if (particleContainer) {
-        const count = 35;
-        for (let i = 0; i < count; i++) {
-            const p = document.createElement('span');
-            p.classList.add('particle');
-            p.style.left = Math.random() * 100 + '%';
-            p.style.width = p.style.height = (Math.random() * 3 + 1) + 'px';
-            p.style.animationDuration = (Math.random() * 15 + 10) + 's';
-            p.style.animationDelay = (Math.random() * 10) + 's';
-            particleContainer.appendChild(p);
+        // Generate twinkling stars
+        const starCount = 100;
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('span');
+            star.classList.add('star');
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = star.style.height = (Math.random() * 2.5 + 0.5) + 'px';
+            star.style.animationDuration = (Math.random() * 3 + 1) + 's';
+            star.style.animationDelay = (Math.random() * 3) + 's';
+            star.style.opacity = Math.random();
+            particleContainer.appendChild(star);
+        }
+
+        // Generate occasional shooting stars
+        const shootingStarCount = 5;
+        for (let i = 0; i < shootingStarCount; i++) {
+            const shooting = document.createElement('span');
+            shooting.classList.add('shooting-star');
+            shooting.style.left = (Math.random() * 100 + 50) + '%'; 
+            shooting.style.top = (Math.random() * -50) + '%';
+            shooting.style.animationDuration = (Math.random() * 4 + 4) + 's';
+            shooting.style.animationDelay = (Math.random() * 5) + 's';
+            particleContainer.appendChild(shooting);
         }
     }
 

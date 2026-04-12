@@ -2,28 +2,29 @@
    DESIGN SYSTEM & CUSTOM PROPERTIES
    ============================================ */
 :root {
-    /* Color Palette */
-    --bg-primary: #0a0a0f;
-    --bg-secondary: #12121a;
-    --bg-tertiary: #1a1a2e;
-    --bg-card: rgba(255, 255, 255, 0.03);
-    --bg-card-hover: rgba(255, 255, 255, 0.06);
-    --bg-glass: rgba(255, 255, 255, 0.05);
+    /* Color Palette - Deep Space */
+    --bg-primary: #020205;       /* Deep void black */
+    --bg-secondary: #0a0a14;     /* Dark space blue */
+    --bg-tertiary: #13111C;      /* Nebula shadow */
+    --bg-card: rgba(16, 16, 32, 0.4);
+    --bg-card-hover: rgba(26, 26, 52, 0.6);
+    --bg-glass: rgba(255, 255, 255, 0.03);
     
-    --text-primary: #f0f0f5;
-    --text-secondary: #a0a0b8;
-    --text-muted: #6b6b80;
+    --text-primary: #f8f8ff;     /* Starlight white */
+    --text-secondary: #b4b4c8;   /* Distant star grey */
+    --text-muted: #787890;
     
-    --accent-primary: #7c3aed;
-    --accent-secondary: #a78bfa;
-    --accent-glow: rgba(124, 58, 237, 0.3);
+    --accent-primary: #00f0ff;   /* Cyan neon */
+    --accent-secondary: #9d4edd; /* Nebula purple */
+    --accent-glow: rgba(0, 240, 255, 0.4);
+    --accent-purple-glow: rgba(157, 78, 221, 0.4);
     
-    --gradient-primary: linear-gradient(135deg, #7c3aed 0%, #ec4899 50%, #f59e0b 100%);
-    --gradient-accent: linear-gradient(135deg, #7c3aed 0%, #a78bfa 100%);
-    --gradient-card: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%);
+    --gradient-primary: linear-gradient(135deg, #00f0ff 0%, #9d4edd 50%, #e0aaff 100%);
+    --gradient-accent: linear-gradient(135deg, #00f0ff 0%, #9d4edd 100%);
+    --gradient-card: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(157, 78, 221, 0.05) 100%);
     
-    --border-color: rgba(255, 255, 255, 0.08);
-    --border-glow: rgba(124, 58, 237, 0.4);
+    --border-color: rgba(255, 255, 255, 0.06);
+    --border-glow: rgba(0, 240, 255, 0.5);
     
     /* Typography */
     --font-heading: 'Space Grotesk', sans-serif;
@@ -87,7 +88,7 @@ ul {
 }
 
 /* ============================================
-   BACKGROUND PARTICLES
+   BACKGROUND PARTICLES (STARFIELD)
    ============================================ */
 .bg-particles {
     position: fixed;
@@ -98,32 +99,45 @@ ul {
     pointer-events: none;
     z-index: 0;
     overflow: hidden;
+    background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
 }
 
-.particle {
+.star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle infinite alternate;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(0.8); }
+    100% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 8px #fff; }
+}
+
+.shooting-star {
     position: absolute;
     width: 2px;
-    height: 2px;
-    background: var(--accent-secondary);
-    border-radius: 50%;
+    height: 80px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    animation: shoot linear infinite;
     opacity: 0;
-    animation: float-particle linear infinite;
+    transform: rotate(45deg);
 }
 
-@keyframes float-particle {
+@keyframes shoot {
     0% {
+        transform: translate(0, 0) rotate(45deg);
         opacity: 0;
-        transform: translateY(100vh) scale(0);
     }
     10% {
-        opacity: 0.6;
+        opacity: 1;
     }
-    90% {
-        opacity: 0.6;
+    20% {
+        transform: translate(-300px, 300px) rotate(45deg);
+        opacity: 0;
     }
     100% {
         opacity: 0;
-        transform: translateY(-10vh) scale(1);
     }
 }
 
