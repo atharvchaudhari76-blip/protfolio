@@ -96,6 +96,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------
     // Counter animation (hero stats)
     // ----------------------------------------
+    const projectCards = document.querySelectorAll('.project-card');
+    const dynamicProjectCountNode = document.getElementById('dynamic-project-count');
+    
+    if (dynamicProjectCountNode && projectCards.length > 0) {
+        dynamicProjectCountNode.setAttribute('data-count', projectCards.length);
+    }
+
     const counters = document.querySelectorAll('[data-count]');
 
     function animateCounter(el) {
