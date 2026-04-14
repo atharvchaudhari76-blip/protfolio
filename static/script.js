@@ -2,42 +2,48 @@
 // PORTFOLIO - Main JavaScript
 // ============================================
 
-document.addEventListener('DOMContentLoaded', function () {
+// Force scroll restoration to manual
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
 
-    // ----------------------------------------
-    // Background Particles (Starfield)
-    // ----------------------------------------
-    const particleContainer = document.getElementById('bgParticles');
-    if (particleContainer) {
-        // Generate twinkling stars
-        const starCount = 150;
-        const starColors = ['#ffffff', '#00f0ff', '#9d4edd', '#fff4e6'];
-        
-        for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('span');
-            star.classList.add('star');
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.width = star.style.height = (Math.random() * 2 + 1) + 'px';
-            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
-            star.style.animationDelay = (Math.random() * 5) + 's';
-            star.style.backgroundColor = starColors[Math.floor(Math.random() * starColors.length)];
-            star.style.opacity = Math.random() * 0.7 + 0.3;
-            particleContainer.appendChild(star);
-        }
+// Aggressive Scroll Reset - Force y=0 repeatedly for 1000ms
+const resetScroll = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+};
 
-        // Generate occasional shooting stars
-        const shootingStarCount = 5;
-        for (let i = 0; i < shootingStarCount; i++) {
-            const shooting = document.createElement('span');
-            shooting.classList.add('shooting-star');
-            shooting.style.left = (Math.random() * 100 + 50) + '%'; 
-            shooting.style.top = (Math.random() * -50) + '%';
-            shooting.style.animationDuration = (Math.random() * 4 + 4) + 's';
-            shooting.style.animationDelay = (Math.random() * 5) + 's';
-            particleContainer.appendChild(shooting);
-        }
+// Execute immediately and on every animation frame for the first second
+const startTimestamp = Date.now();
+const performReset = () => {
+    resetScroll();
+    if (Date.now() - startTimestamp < 1000) {
+        requestAnimationFrame(performReset);
+    } else {
+        // Re-enable smooth scrolling only after stabilization
+        document.documentElement.classList.add('smooth-scroll');
     }
+};
+requestAnimationFrame(performReset);
+
+// Clear hash fragments to prevent jumping
+if (window.location.hash) {
+    history.replaceState(null, null, window.location.pathname + window.location.search);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    resetScroll();
+    
+    // Ensure body is visible now that we've locked the scroll
+    document.body.style.visibility = 'visible';
+    document.body.style.opacity = '1';
+
+
+
+
+    // Background Particles (Starfield) - REMOVED ANIMATION
+    const particleContainer = document.getElementById('bgParticles');
+    // Static background is now handled purely via CSS to remove JS overhead
+
 
     // ----------------------------------------
     // Navbar scroll effect
@@ -80,43 +86,56 @@ document.addEventListener('DOMContentLoaded', function () {
     // ----------------------------------------
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.getElementById('navMenu');
+    
+    let navOverlay = document.querySelector('.nav-overlay');
+    if (!navOverlay) {
+        navOverlay = document.createElement('div');
+        navOverlay.className = 'nav-overlay';
+        document.body.appendChild(navOverlay);
+    }
 
     if (navToggle && navMenu) {
-        navToggle.addEventListener('click', () => {
+        const toggleMenu = (e) => {
+            if (e) e.stopPropagation();
+            const isActive = navMenu.classList.toggle('active');
             navToggle.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
+            navOverlay.classList.toggle('active');
+            document.body.style.overflow = isActive ? 'hidden' : '';
+        };
 
-        // Close menu when clicking a link
+        navToggle.addEventListener('click', toggleMenu);
+        navOverlay.addEventListener('click', toggleMenu);
+
         navMenu.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 navToggle.classList.remove('active');
                 navMenu.classList.remove('active');
+                navOverlay.classList.remove('active');
+                document.body.style.overflow = '';
             });
         });
     }
 
     // ----------------------------------------
-    // Counter animation (hero stats)
+    // Counter animation logic
     // ----------------------------------------
-    const projectCards = document.querySelectorAll('.project-card');
-    const dynamicProjectCountNode = document.getElementById('dynamic-project-count');
-    
-    if (dynamicProjectCountNode && projectCards.length > 0) {
-        dynamicProjectCountNode.setAttribute('data-count', projectCards.length);
-    }
-
-    const counters = document.querySelectorAll('[data-count]');
-
     function animateCounter(el) {
-        const target = parseInt(el.getAttribute('data-count'), 10);
-        const duration = 1800;
+        // Read the attribute again to ensure we have the latest value (for dynamic count)
+        const targetAttr = el.getAttribute('data-count');
+        const target = parseInt(targetAttr, 10);
+        
+        if (isNaN(target) || target === 0) {
+            // If it's 0, we should still "animate" or just show 0
+            el.textContent = '0';
+            return;
+        }
+
+        const duration = 2000;
         const start = performance.now();
 
         function update(now) {
             const elapsed = now - start;
             const progress = Math.min(elapsed / duration, 1);
-            // Ease out cubic
             const eased = 1 - Math.pow(1 - progress, 3);
             el.textContent = Math.floor(target * eased);
             if (progress < 1) requestAnimationFrame(update);
@@ -126,76 +145,85 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ----------------------------------------
-    // Scroll reveal (IntersectionObserver)
+    // Consolidated Intersection Observer
     // ----------------------------------------
-    const revealElements = document.querySelectorAll(
+    const observerOptions = {
+        threshold: 0.05,
+        rootMargin: '0px 0px -20px 0px'
+    };
+
+    const mainObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                const target = entry.target;
+
+                if (target.classList.contains('reveal')) {
+                    target.classList.add('visible');
+                }
+
+                if (target.classList.contains('skill-fill')) {
+                    target.classList.add('animate');
+                }
+
+                if (target.hasAttribute('data-count') && !target.classList.contains('counted')) {
+                    // Small delay to ensure dynamic attributes are processed
+                    setTimeout(() => animateCounter(target), 50);
+                    target.classList.add('counted');
+                }
+
+                if (!target.classList.contains('animate-repeat')) {
+                    mainObserver.unobserve(target);
+                }
+            }
+        });
+    }, observerOptions);
+
+    // ----------------------------------------
+    // Dynamic Stats & Project Counting
+    // ----------------------------------------
+    const projectCards = document.querySelectorAll('.project-card');
+    const projectCount = projectCards.length;
+    
+    // Update Hero Project Stat
+    const dynamicProjectCountNode = document.getElementById('dynamic-project-count');
+    if (dynamicProjectCountNode && projectCount > 0) {
+        dynamicProjectCountNode.setAttribute('data-count', projectCount);
+    }
+    
+    // Update Projects Section Badge
+    const projectCountBadge = document.getElementById('project-count-badge');
+    if (projectCountBadge && projectCount > 0) {
+        projectCountBadge.textContent = `(${projectCount})`;
+    }
+    
+    // Dynamic Technologies Counting
+    const skillCards = document.querySelectorAll('.skill-card');
+    const techCount = skillCards.length;
+    
+    const techCountNode = document.getElementById('dynamic-tech-count');
+    if (techCountNode && techCount > 0) {
+        techCountNode.setAttribute('data-count', techCount);
+    }
+
+    // Register elements to observer
+    document.querySelectorAll(
         '.service-card, .featured-card, .project-card, .skill-card, .timeline-item, ' +
         '.contact-method, .about-content, .about-image-card, .contact-form-wrapper'
-    );
+    ).forEach(el => {
+        el.classList.add('reveal');
+        mainObserver.observe(el);
+    });
 
-    revealElements.forEach(el => el.classList.add('reveal'));
-
-    const revealObserver = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, index * 80);
-                    revealObserver.unobserve(entry.target);
-                }
-            });
-        },
-        { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-    );
-
-    revealElements.forEach(el => revealObserver.observe(el));
-
-    // ----------------------------------------
-    // Skill bars animation
-    // ----------------------------------------
-    const skillFills = document.querySelectorAll('.skill-fill');
-
-    const skillObserver = new IntersectionObserver(
-        (entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animate');
-                    skillObserver.unobserve(entry.target);
-                }
-            });
-        },
-        { threshold: 0.1 }
-    );
-
-    skillFills.forEach(el => skillObserver.observe(el));
-
-    // ----------------------------------------
-    // Counter observer
-    // ----------------------------------------
-    const counterObserver = new IntersectionObserver(
-        (entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounter(entry.target);
-                    counterObserver.unobserve(entry.target);
-                }
-            });
-        },
-        { threshold: 0.5 }
-    );
-
-    counters.forEach(el => counterObserver.observe(el));
+    document.querySelectorAll('.skill-fill').forEach(el => mainObserver.observe(el));
+    document.querySelectorAll('[data-count]').forEach(el => mainObserver.observe(el));
 
     // ----------------------------------------
     // Project filter tabs
     // ----------------------------------------
     const filterBtns = document.querySelectorAll('.filter-btn');
-    // Using projectCards defined at line 102
 
     filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Update active button
             filterBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
@@ -204,22 +232,40 @@ document.addEventListener('DOMContentLoaded', function () {
             projectCards.forEach(card => {
                 const category = card.getAttribute('data-category');
                 if (filter === 'all' || category === filter) {
-                    card.classList.remove('hidden');
-                    card.style.animation = 'fadeUp 0.5s ease forwards';
+                    card.classList.remove('hidden-filter');
+                    setTimeout(() => {
+                        card.style.display = 'block';
+                    }, 0);
                 } else {
-                    card.classList.add('hidden');
+                    card.classList.add('hidden-filter');
+                    setTimeout(() => {
+                        if (card.classList.contains('hidden-filter')) {
+                            card.style.display = 'none';
+                        }
+                    }, 400); // Match transition duration in CSS
                 }
             });
         });
     });
 
     // ----------------------------------------
-    // Contact form (simple UX feedback)
+    // Contact form (with validation)
     // ----------------------------------------
     const contactForm = document.getElementById('contactForm');
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
+            
+            const emailInput = document.getElementById('email');
+            const emailValue = emailInput.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailRegex.test(emailValue)) {
+                emailInput.parentElement.classList.add('error');
+                setTimeout(() => emailInput.parentElement.classList.remove('error'), 2000);
+                return;
+            }
+
             const btn = contactForm.querySelector('button[type="submit"]');
             const originalHTML = btn.innerHTML;
             btn.innerHTML = '<span>Message Sent!</span> <i class="fas fa-check"></i>';
@@ -236,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ----------------------------------------
-    // Tilt effect on service cards
+    // Improved Tilt effect
     // ----------------------------------------
     document.querySelectorAll('[data-tilt]').forEach(card => {
         card.addEventListener('mousemove', (e) => {
@@ -245,13 +291,20 @@ document.addEventListener('DOMContentLoaded', function () {
             const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / centerY * -5;
-            const rotateY = (x - centerX) / centerX * 5;
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+            const rotateX = (y - centerY) / centerY * -8;
+            const rotateY = (x - centerX) / centerX * 8;
+            card.style.transition = 'none';
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
         });
 
         card.addEventListener('mouseleave', () => {
+            card.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             card.style.transform = '';
         });
     });
+});
+
+// Final fallback for when all assets (images, etc.) are fully loaded
+window.addEventListener('load', function() {
+    window.scrollTo({ top: 0, behavior: 'auto' });
 });
