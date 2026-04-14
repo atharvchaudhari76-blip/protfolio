@@ -319,6 +319,24 @@
 
         <div class="projects-grid">
             <div class="project-card" data-category="web">
+                <div class="project-image" style="background: url('{{ url_for('static', filename='projects/music-hero.png') }}') center/cover no-repeat;">
+                    <div class="project-overlay">
+                        <div class="project-actions">
+                            <a href="{{ url_for('static', filename='projects/music-app/index.html') }}" class="project-action-btn" aria-label="View Live"><i class="fas fa-external-link-alt"></i></a>
+                            <a href="https://github.com/atharvchaudhari76-blip/portfolio/tree/main/music-app" class="project-action-btn" aria-label="View Code"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-info">
+                    <h3>AesthetiCore Music</h3>
+                    <p>A premium, zero-config music player with YouTube search, full playback, and a glassmorphic UI.</p>
+                    <div class="project-tech">
+                        <span>React</span><span>YouTube API</span><span>Glassmorphism</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card" data-category="web">
                 <div class="project-image" style="background: linear-gradient(135deg, #00f0ff 0%, #3a0ca3 100%);">
                     <div class="project-overlay">
                         <div class="project-actions">
