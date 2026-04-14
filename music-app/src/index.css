@@ -173,11 +173,12 @@ body {
     position: fixed;
     transform: translateX(-100%);
     width: 280px;
-    box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+    box-shadow: none; /* Remove shadow to prevent edge artifacts */
   }
 
   .sidebar-wrapper.active {
     transform: translateX(0);
+    box-shadow: 20px 0 50px rgba(0,0,0,0.5);
   }
 
   .sidebar-overlay.active {
@@ -188,7 +189,7 @@ body {
 
   .main-content {
     padding: 16px;
-    padding-bottom: calc(var(--player-height) + 80px);
+    padding-bottom: calc(var(--player-height) + 80px + env(safe-area-inset-bottom));
   }
 
   .bottom-nav {
@@ -196,7 +197,7 @@ body {
   }
 
   .player-bar {
-    bottom: 64px;
+    bottom: calc(64px + env(safe-area-inset-bottom));
     height: 80px;
     padding: 0 16px;
     gap: 12px;
