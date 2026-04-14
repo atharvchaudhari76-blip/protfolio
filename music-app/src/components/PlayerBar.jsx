@@ -1,12 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import ReactPlayer from 'react-player';
-import { Play, Pause, SkipForward, SkipBack, Volume2, Maximize2, Heart, ExternalLink } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Volume2, Maximize2, Heart, ExternalLink, Loader2 } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
+import { searchMusic } from '../services/musicService';
 
 const PlayerBar = () => {
-  const { currentTrack, streamUrl, isPlaying, isLoadingStream, togglePlay, volume, setVolume, library, addToLibrary, removeFromLibrary } = useAudio();
+  const { currentTrack, isPlaying, togglePlay, volume, setVolume, library, addToLibrary, removeFromLibrary, playTrack } = useAudio();
   const [played, setPlayed] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isFallbackLoading, setIsFallbackLoading] = useState(false);
   const playerRef = useRef(null);
 
   const isLiked = currentTrack && library.find(t => t.id === currentTrack.id);
@@ -15,6 +17,32 @@ const PlayerBar = () => {
     const time = parseFloat(e.target.value);
     setPlayed(time);
     playerRef.current.seekTo(time);
+  };
+
+  const handlePlayerError = async () => {
+    console.warn('Playback restricted for this video, attempting fallback...');
+    setIsFallbackLoading(true);
+    try {
+      // Search for a lyric or audio version as a fallback
+      const query = `${currentTrack.title} ${currentTrack.artist} lyrics`;
+      const results = await searchMusic(query);
+      const fallback = results.find(r => r.id !== currentTrack.id);
+      
+      if (fallback) {
+        console.log('Found fallback track:', fallback.title);
+        playTrack({
+          ...currentTrack,
+          id: fallback.id,
+          title: currentTrack.title // Keep original title for UI
+        });
+      } else {
+        alert('This track is restricted and no alternatives were found.');
+      }
+    } catch (err) {
+      console.error('Fallback failed:', err);
+    } finally {
+      setIsFallbackLoading(false);
+    }
   };
 
   const formatTime = (seconds) => {
@@ -29,24 +57,15 @@ const PlayerBar = () => {
     <div className="player-bar">
       {/* Hidden Player */}
       <div style={{ display: 'none' }}>
-        {streamUrl && (
-          <ReactPlayer
-            ref={playerRef}
-            url={streamUrl}
-            playing={isPlaying}
-            volume={volume}
-            onProgress={(p) => setPlayed(p.playedSeconds)}
-            onDuration={(d) => setDuration(d)}
-            config={{
-              file: {
-                forceAudio: true,
-                attributes: {
-                  controlsList: 'nodownload'
-                }
-              }
-            }}
-          />
-        )}
+        <ReactPlayer
+          ref={playerRef}
+          url={`https://www.youtube.com/watch?v=${currentTrack.id}`}
+          playing={isPlaying}
+          volume={volume}
+          onProgress={(p) => setPlayed(p.playedSeconds)}
+          onDuration={(d) => setDuration(d)}
+          onError={handlePlayerError}
+        />
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', width: '30%', gap: '16px' }}>
@@ -76,17 +95,11 @@ const PlayerBar = () => {
           <button 
             className="btn" 
             onClick={togglePlay}
-            disabled={isLoadingStream}
-            style={{ 
-              background: 'white', 
-              color: 'black', 
-              padding: '10px', 
-              borderRadius: '50%',
-              opacity: isLoadingStream ? 0.7 : 1
-            }}
+            disabled={isFallbackLoading}
+            style={{ background: 'white', color: 'black', padding: '10px', borderRadius: '50%', position: 'relative' }}
           >
-            {isLoadingStream ? (
-              <div className="animate-spin" style={{ width: '24px', height: '24px', border: '2px solid black', borderTop: '2px solid transparent', borderRadius: '50%' }}></div>
+            {isFallbackLoading ? (
+              <Loader2 className="animate-spin" size={24} />
             ) : isPlaying ? (
               <Pause size={24} fill="black" />
             ) : (
@@ -95,6 +108,7 @@ const PlayerBar = () => {
           </button>
           <button className="btn"><SkipForward size={20} /></button>
         </div>
+
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%', maxWidth: '600px' }}>
           <span style={{ fontSize: '11px', color: 'var(--text-muted)', width: '40px' }}>{formatTime(played)}</span>
