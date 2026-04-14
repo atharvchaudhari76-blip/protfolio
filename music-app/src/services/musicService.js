@@ -60,3 +60,35 @@ export const getTrending = async () => {
   }
   return [];
 };
+
+export const getStreamUrl = async (videoId) => {
+  for (const instance of INVIDIOUS_INSTANCES) {
+    try {
+      const response = await fetch(`${instance}/api/v1/videos/${videoId}`, {
+        signal: AbortSignal.timeout(5000)
+      });
+      if (!response.ok) continue;
+      
+      const data = await response.json();
+      
+      // Look for adaptive formats (usually higher quality audio-only)
+      const audioFormat = data.adaptiveFormats
+        ?.filter(f => f.type.startsWith('audio/'))
+        .sort((a, b) => (parseInt(b.bitrate) || 0) - (parseInt(a.bitrate) || 0))[0];
+        
+      if (audioFormat && audioFormat.url) {
+        return audioFormat.url;
+      }
+      
+      // Fallback to regular format streams
+      const formatStream = data.formatStreams?.find(s => s.container === 'mp4' || s.container === 'webm');
+      if (formatStream && formatStream.url) {
+        return formatStream.url;
+      }
+    } catch (error) {
+      continue;
+    }
+  }
+  throw new Error('No playable stream found for this track.');
+};
+

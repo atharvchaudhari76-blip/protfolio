@@ -4,7 +4,7 @@ import { Play, Pause, SkipForward, SkipBack, Volume2, Maximize2, Heart, External
 import { useAudio } from '../context/AudioContext';
 
 const PlayerBar = () => {
-  const { currentTrack, isPlaying, togglePlay, volume, setVolume, library, addToLibrary, removeFromLibrary } = useAudio();
+  const { currentTrack, streamUrl, isPlaying, isLoadingStream, togglePlay, volume, setVolume, library, addToLibrary, removeFromLibrary } = useAudio();
   const [played, setPlayed] = useState(0);
   const [duration, setDuration] = useState(0);
   const playerRef = useRef(null);
@@ -29,14 +29,24 @@ const PlayerBar = () => {
     <div className="player-bar">
       {/* Hidden Player */}
       <div style={{ display: 'none' }}>
-        <ReactPlayer
-          ref={playerRef}
-          url={`https://www.youtube.com/watch?v=${currentTrack.id}`}
-          playing={isPlaying}
-          volume={volume}
-          onProgress={(p) => setPlayed(p.playedSeconds)}
-          onDuration={(d) => setDuration(d)}
-        />
+        {streamUrl && (
+          <ReactPlayer
+            ref={playerRef}
+            url={streamUrl}
+            playing={isPlaying}
+            volume={volume}
+            onProgress={(p) => setPlayed(p.playedSeconds)}
+            onDuration={(d) => setDuration(d)}
+            config={{
+              file: {
+                forceAudio: true,
+                attributes: {
+                  controlsList: 'nodownload'
+                }
+              }
+            }}
+          />
+        )}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', width: '30%', gap: '16px' }}>
@@ -66,9 +76,22 @@ const PlayerBar = () => {
           <button 
             className="btn" 
             onClick={togglePlay}
-            style={{ background: 'white', color: 'black', padding: '10px', borderRadius: '50%' }}
+            disabled={isLoadingStream}
+            style={{ 
+              background: 'white', 
+              color: 'black', 
+              padding: '10px', 
+              borderRadius: '50%',
+              opacity: isLoadingStream ? 0.7 : 1
+            }}
           >
-            {isPlaying ? <Pause size={24} fill="black" /> : <Play size={24} fill="black" style={{ marginLeft: '2px' }} />}
+            {isLoadingStream ? (
+              <div className="animate-spin" style={{ width: '24px', height: '24px', border: '2px solid black', borderTop: '2px solid transparent', borderRadius: '50%' }}></div>
+            ) : isPlaying ? (
+              <Pause size={24} fill="black" />
+            ) : (
+              <Play size={24} fill="black" style={{ marginLeft: '2px' }} />
+            )}
           </button>
           <button className="btn"><SkipForward size={20} /></button>
         </div>
