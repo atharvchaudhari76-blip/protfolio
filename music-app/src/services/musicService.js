@@ -1,84 +1,53 @@
-const INVIDIOUS_INSTANCES = [
-  'https://iv.ggtyler.dev',
-  'https://inv.nadeko.net',
-  'https://invidious.ducks.party',
-  'https://invidious.sethforprivacy.com',
-  'https://inv.zzls.xyz',
-  'https://invidious.projectsegfau.lt'
-];
+const SAAVN_API = 'https://jiosaavn-api-privatecvc2.vercel.app';
 
 export const searchMusic = async (query) => {
-  for (const instance of INVIDIOUS_INSTANCES) {
-    try {
-      // Searching for "{query} topic" finds the official audio-only versions
-      // these are unrestricted for embedding and have studio quality.
-      const searchQuery = `${query} topic`;
-
-      const response = await fetch(
-        `${instance}/api/v1/search?q=${encodeURIComponent(searchQuery)}&type=video`,
-        { signal: AbortSignal.timeout(5000) }
-      );
-      
-      if (!response.ok) continue;
-      
-      const data = await response.json();
-      
-      return data.map(item => ({
-        id: item.videoId,
-        title: item.title.replace(' - Topic', '').replace(' (Official Audio)', ''),
-        artist: item.author.replace(' - Topic', ''),
-        thumbnail: item.videoThumbnails?.find(t => t.quality === 'medium')?.url || item.videoThumbnails?.[0]?.url,
-        duration: item.lengthSeconds,
-        views: item.viewCount
-      }));
-    } catch (error) {
-      continue;
+  try {
+    const response = await fetch(`${SAAVN_API}/search/songs?query=${encodeURIComponent(query)}`);
+    if (!response.ok) throw new Error('Network response was not ok');
+    const data = await response.json();
+    
+    if (data.status === 'SUCCESS' && data.data && data.data.results) {
+      return data.data.results.map(item => {
+        // Get highest quality download url available (usually 160kbps or 320kbps object)
+        const bestAudio = item.downloadUrl ? item.downloadUrl[item.downloadUrl.length - 1].link : null;
+        
+        return {
+          id: item.id,
+          title: item.name,
+          artist: item.primaryArtists,
+          thumbnail: item.image && item.image.length > 0 ? item.image[item.image.length - 1].link : '',
+          duration: parseInt(item.duration) || 0,
+          streamUrl: bestAudio,
+          views: parseInt(item.playCount) || 0
+        };
+      });
     }
+    return [];
+  } catch (error) {
+    console.error('Search failed:', error);
+    return [];
   }
-  return [];
 };
 
 export const getTrending = async () => {
-  // Stable trending list for Bollywood & Global hits
-  return [
-    { id: 'h7GyP0Spx3o', title: 'Aayi Nai', artist: 'Pawan Singh', thumbnail: 'https://img.youtube.com/vi/h7GyP0Spx3o/mqdefault.jpg' },
-    { id: '6S6pivkYyVY', title: 'Kesariya', artist: 'Arijit Singh', thumbnail: 'https://img.youtube.com/vi/6S6pivkYyVY/mqdefault.jpg' },
-    { id: 'T94PHkuydcw', title: 'Heeriye', artist: 'Arijit Singh', thumbnail: 'https://img.youtube.com/vi/T94PHkuydcw/mqdefault.jpg' },
-    { id: 'KUpwndQ0_8k', title: 'Sajni', artist: 'Arijit Singh', thumbnail: 'https://img.youtube.com/vi/KUpwndQ0_8k/mqdefault.jpg' },
-    { id: '407Y7_nKntU', title: 'Tauba Tauba', artist: 'Karan Aujla', thumbnail: 'https://img.youtube.com/vi/407Y7_nKntU/mqdefault.jpg' },
-    { id: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up', artist: 'Rick Astley', thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg' }
-  ];
-};
-
-
-export const getStreamUrl = async (videoId) => {
-  for (const instance of INVIDIOUS_INSTANCES) {
+  // We use stable keywords for top hits and resolve them via Saavn to get their valid stream URLs.
+  const hits = ['Tauba Tauba', 'Kesariya', 'Aayi Nai', 'Sajni', 'O Maahi', 'Heeriye'];
+  const results = [];
+  
+  for (const hit of hits) {
     try {
-      const response = await fetch(`${instance}/api/v1/videos/${videoId}`, {
-        signal: AbortSignal.timeout(5000)
-      });
-      if (!response.ok) continue;
-      
-      const data = await response.json();
-      
-      // Look for adaptive formats (usually higher quality audio-only)
-      const audioFormat = data.adaptiveFormats
-        ?.filter(f => f.type.startsWith('audio/'))
-        .sort((a, b) => (parseInt(b.bitrate) || 0) - (parseInt(a.bitrate) || 0))[0];
-        
-      if (audioFormat && audioFormat.url) {
-        return audioFormat.url;
+      const res = await searchMusic(hit);
+      if (res && res.length > 0) {
+        results.push(res[0]); 
       }
-      
-      // Fallback to regular format streams
-      const formatStream = data.formatStreams?.find(s => s.container === 'mp4' || s.container === 'webm');
-      if (formatStream && formatStream.url) {
-        return formatStream.url;
-      }
-    } catch (error) {
-      continue;
-    }
+    } catch(e) {}
   }
-  throw new Error('No playable stream found for this track.');
+  return results;
 };
+
+export const getStreamUrl = async (trackId) => {
+  // streamUrl is now resolved directly during search, but we keep this stub if AudioContext calls it.
+  return null; 
+};
+
 

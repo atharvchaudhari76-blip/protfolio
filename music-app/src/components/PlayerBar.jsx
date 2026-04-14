@@ -30,17 +30,23 @@ const PlayerBar = () => {
     <div className="player-bar">
       {/* Hidden Player */}
       <div style={{ display: 'none' }}>
-        <ReactPlayer
-          ref={playerRef}
-          url={`https://www.youtube.com/watch?v=${currentTrack.id}`}
-          playing={isPlaying}
-          volume={volume}
-          onProgress={(p) => setPlayed(p.playedSeconds)}
-          onDuration={(d) => setDuration(d)}
-        />
+        {currentTrack.streamUrl && (
+          <ReactPlayer
+            ref={playerRef}
+            url={currentTrack.streamUrl}
+            playing={isPlaying}
+            volume={volume}
+            onProgress={(p) => setPlayed(p.playedSeconds)}
+            onDuration={(d) => setDuration(d)}
+            config={{
+              file: {
+                forceAudio: true,
+                attributes: { controlsList: 'nodownload' }
+              }
+            }}
+          />
+        )}
       </div>
-
-
       <div style={{ display: 'flex', alignItems: 'center', width: '30%', gap: '16px' }}>
         <img 
           src={currentTrack.thumbnail} 
@@ -102,15 +108,6 @@ const PlayerBar = () => {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', width: '30%', justifyContent: 'flex-end', gap: '16px' }}>
-        <a 
-          href={`https://youtube.com/watch?v=${currentTrack.id}`} 
-          target="_blank" 
-          rel="noreferrer" 
-          className="btn"
-          title="Open in YouTube"
-        >
-          <ExternalLink size={18} />
-        </a>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Volume2 size={18} color="var(--text-muted)" />
           <input 
