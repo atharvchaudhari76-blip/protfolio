@@ -8,13 +8,11 @@ const INVIDIOUS_INSTANCES = [
 ];
 
 export const searchMusic = async (query) => {
-  // We try each instance until one works
   for (const instance of INVIDIOUS_INSTANCES) {
     try {
-      // We search for "{query} audio" to find embeddable versions by default
-      const searchQuery = query.toLowerCase().includes('audio') || query.toLowerCase().includes('lyrics') 
-        ? query 
-        : `${query} official audio`;
+      // Searching for "{query} topic" finds the official audio-only versions
+      // these are unrestricted for embedding and have studio quality.
+      const searchQuery = `${query} topic`;
 
       const response = await fetch(
         `${instance}/api/v1/search?q=${encodeURIComponent(searchQuery)}&type=video`,
@@ -27,33 +25,8 @@ export const searchMusic = async (query) => {
       
       return data.map(item => ({
         id: item.videoId,
-        title: item.title,
-        artist: item.author,
-        thumbnail: item.videoThumbnails?.find(t => t.quality === 'medium')?.url || item.videoThumbnails?.[0]?.url,
-        duration: item.lengthSeconds,
-        views: item.viewCount,
-        isOfficial: item.authorVerified || item.title.toLowerCase().includes('official')
-      }));
-    } catch (error) {
-      continue;
-    }
-  }
-  throw new Error('All search instances failed. Please try again later.');
-};
-
-
-export const getTrending = async () => {
-  for (const instance of INVIDIOUS_INSTANCES) {
-    try {
-      const response = await fetch(`${instance}/api/v1/trending?type=music`, {
-        signal: AbortSignal.timeout(5000)
-      });
-      if (!response.ok) continue;
-      const data = await response.json();
-      return data.slice(0, 15).map(item => ({
-        id: item.videoId,
-        title: item.title,
-        artist: item.author,
+        title: item.title.replace(' - Topic', '').replace(' (Official Audio)', ''),
+        artist: item.author.replace(' - Topic', ''),
         thumbnail: item.videoThumbnails?.find(t => t.quality === 'medium')?.url || item.videoThumbnails?.[0]?.url,
         duration: item.lengthSeconds,
         views: item.viewCount
@@ -64,6 +37,19 @@ export const getTrending = async () => {
   }
   return [];
 };
+
+export const getTrending = async () => {
+  // Stable trending list for Bollywood & Global hits
+  return [
+    { id: 'h7GyP0Spx3o', title: 'Aayi Nai', artist: 'Pawan Singh', thumbnail: 'https://img.youtube.com/vi/h7GyP0Spx3o/mqdefault.jpg' },
+    { id: '6S6pivkYyVY', title: 'Kesariya', artist: 'Arijit Singh', thumbnail: 'https://img.youtube.com/vi/6S6pivkYyVY/mqdefault.jpg' },
+    { id: 'T94PHkuydcw', title: 'Heeriye', artist: 'Arijit Singh', thumbnail: 'https://img.youtube.com/vi/T94PHkuydcw/mqdefault.jpg' },
+    { id: 'KUpwndQ0_8k', title: 'Sajni', artist: 'Arijit Singh', thumbnail: 'https://img.youtube.com/vi/KUpwndQ0_8k/mqdefault.jpg' },
+    { id: '407Y7_nKntU', title: 'Tauba Tauba', artist: 'Karan Aujla', thumbnail: 'https://img.youtube.com/vi/407Y7_nKntU/mqdefault.jpg' },
+    { id: 'dQw4w9WgXcQ', title: 'Never Gonna Give You Up', artist: 'Rick Astley', thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg' }
+  ];
+};
+
 
 export const getStreamUrl = async (videoId) => {
   for (const instance of INVIDIOUS_INSTANCES) {
