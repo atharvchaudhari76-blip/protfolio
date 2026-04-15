@@ -40,11 +40,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: music-app/package-lock.json
 
       - name: Install music app dependencies
-        run: npm ci
+        run: npm install
         working-directory: music-app
 
       - name: Build music app
