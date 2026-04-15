@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search as SearchIcon, Music, Podcast, ArtistSquare } from 'lucide-react';
+import { Search as SearchIcon, Music } from 'lucide-react';
 
 const mockSearchResults = {
   top: [
