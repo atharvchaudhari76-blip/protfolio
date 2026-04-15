@@ -1,53 +1,74 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play, MoreHorizontal } from 'lucide-react';
-
-const mockPlaylists = [
-  { id: 1, title: 'Today\'s Top Hits', artist: 'Various Artists', image: 'https://picsum.photos/300/300?random=1' },
-  { id: 2, title: 'RapCaviar', artist: 'Rap', image: 'https://picsum.photos/300/300?random=2' },
-  { id: 3, title: 'Rock This', artist: 'Rock', image: 'https://picsum.photos/300/300?random=3' },
-  { id: 4, title: 'Chill Hits', artist: 'Chill', image: 'https://picsum.photos/300/300?random=4' },
-];
-
-const mockTracks = [
-  { id: 1, title: 'Song Title 1', artist: 'Artist 1', duration: '3:45' },
-  { id: 2, title: 'Song Title 2', artist: 'Artist 2', duration: '4:12' },
-];
+import { getTrending } from '../services/musicService';
+import { useAudio } from '../context/AudioContext';
 
 const Home = () => {
+  const [trendingTracks, setTrendingTracks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { playTrack, currentTrack, isPlaying } = useAudio();
+
+  useEffect(() => {
+    const fetchTrending = async () => {
+      try {
+        const tracks = await getTrending();
+        setTrendingTracks(tracks);
+      } catch (error) {
+        console.error('Failed to fetch trending:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTrending();
+  }, []);
+
+  const handlePlay = (track) => {
+    playTrack(track, trendingTracks);
+  };
+
   return (
     <div className="home">
       <section className="hero">
         <h2>Good evening</h2>
-        <div className="hero-grid">
-          {mockPlaylists.map((playlist) => (
-            <div key={playlist.id} className="playlist-card">
-              <img src={playlist.image} alt={playlist.title} />
-              <div className="playlist-info">
-                <h3>{playlist.title}</h3>
-                <p>{playlist.artist}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <p className="section-subtitle">Trending and top hits for you</p>
       </section>
 
       <section className="recently-played">
-        <h3>Recently played</h3>
-        <div className="tracks-grid">
-          {mockTracks.map((track) => (
-            <div key={track.id} className="track-item">
-              <div className="track-play">
-                <Play size={20} />
+        <h3>Trending Tracks</h3>
+        {isLoading ? (
+          <div className="loading-state">
+            <div className="loading-spinner"></div>
+            <p>Loading trending tracks...</p>
+          </div>
+        ) : (
+          <div className="tracks-grid">
+            {trendingTracks.map((track) => (
+              <div 
+                key={track.id} 
+                className={`track-item ${currentTrack?.id === track.id ? 'active' : ''}`}
+                onClick={() => handlePlay(track)}
+              >
+                <div className="track-play">
+                  {currentTrack?.id === track.id && isPlaying ? (
+                    <div className="playing-animation pink">
+                       <span></span><span></span><span></span>
+                    </div>
+                  ) : (
+                    <Play size={20} fill="#fff" />
+                  )}
+                </div>
+                <div className="track-info">
+                  <p className="track-title">{track.title}</p>
+                  <p className="track-artist">{track.artist}</p>
+                </div>
+                <span className="track-duration">
+                  {Math.floor(track.duration / 60)}:{(track.duration % 60).toString().padStart(2, '0')}
+                </span>
+                <MoreHorizontal size={20} className="track-more" />
               </div>
-              <div className="track-info">
-                <p className="track-title">{track.title}</p>
-                <p className="track-artist">{track.artist}</p>
-              </div>
-              <span className="track-duration">{track.duration}</span>
-              <MoreHorizontal size={20} />
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

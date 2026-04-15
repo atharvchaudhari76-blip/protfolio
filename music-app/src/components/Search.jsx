@@ -1,23 +1,37 @@
-import React, { useState } from 'react';
-import { Search as SearchIcon, Music } from 'lucide-react';
-
-const mockSearchResults = {
-  top: [
-    { id: 1, title: 'Top Songs', type: 'songs', image: 'https://picsum.photos/80/80?random=10', count: 5 },
-    { id: 2, title: 'Top Artists', type: 'artists', image: 'https://picsum.photos/80/80?random=11', count: 4 },
-  ],
-  songs: [
-    { id: 1, title: 'Search Result Song 1', artist: 'Artist A', duration: '3:30' },
-    { id: 2, title: 'Search Result Song 2', artist: 'Artist B', duration: '2:58' },
-  ],
-  artists: [
-    { id: 1, title: 'Artist One', image: 'https://picsum.photos/60/60?random=12' },
-    { id: 2, title: 'Artist Two', image: 'https://picsum.photos/60/60?random=13' },
-  ],
-};
+import React, { useState, useEffect } from 'react';
+import { Search as SearchIcon, Music, Play } from 'lucide-react';
+import { searchMusic } from '../services/musicService';
+import { useAudio } from '../context/AudioContext';
 
 const Search = () => {
   const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { playTrack, currentTrack, isPlaying } = useAudio();
+
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (query.trim()) {
+        setIsLoading(true);
+        try {
+          const songs = await searchMusic(query);
+          setResults(songs);
+        } catch (error) {
+          console.error('Search error:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setResults([]);
+      }
+    }, 500); // 500ms debounce
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const handlePlay = (song) => {
+    playTrack(song, results);
+  };
 
   return (
     <div className="search">
@@ -33,52 +47,52 @@ const Search = () => {
         </div>
       </div>
 
-      {query ? (
+      {isLoading ? (
+        <div className="search-loading">
+          <div className="loading-spinner"></div>
+          <p>Searching...</p>
+        </div>
+      ) : query ? (
         <div className="search-results">
-          <section className="top-results">
-            <h3>Top results</h3>
-            <div className="top-grid">
-              {mockSearchResults.top.map((item) => (
-                <div key={item.id} className="top-result">
-                  <img src={item.image} alt={item.title} />
-                  <div>
-                    <h4>{item.title}</h4>
-                    <p>{item.type} • {item.count} total</p>
-                  </div>
+          {results.length > 0 ? (
+            <>
+              <section className="songs-results">
+                <h3>Songs</h3>
+                <div className="tracks-grid">
+                  {results.map((song) => (
+                    <div 
+                      key={song.id} 
+                      className={`track-item ${currentTrack?.id === song.id ? 'active' : ''}`}
+                      onClick={() => handlePlay(song)}
+                    >
+                      <div className="track-play">
+                        {currentTrack?.id === song.id && isPlaying ? (
+                          <div className="playing-animation">
+                            <span></span><span></span><span></span>
+                          </div>
+                        ) : (
+                          <Play size={20} fill="#fff" />
+                        )}
+                      </div>
+                      <div className="track-info">
+                        <p className="track-title">{song.title}</p>
+                        <p className="track-artist">{song.artist}</p>
+                      </div>
+                      <span className="track-duration">
+                        {Math.floor(song.duration / 60)}:{(song.duration % 60).toString().padStart(2, '0')}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </section>
+            </>
+          ) : (
+            <div className="search-empty">
+              <SearchIcon size={64} />
+              <h3>No results found for "{query}"</h3>
+              <p>Try searching for something else</p>
             </div>
-          </section>
-
-          <section className="songs-results">
-            <h3>Songs</h3>
-            <div className="tracks-grid">
-              {mockSearchResults.songs.map((song) => (
-                <div key={song.id} className="track-item">
-                  <div className="track-play">
-                    <Music size={20} />
-                  </div>
-                  <div className="track-info">
-                    <p className="track-title">{song.title}</p>
-                    <p className="track-artist">{song.artist}</p>
-                  </div>
-                  <span className="track-duration">{song.duration}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="artists-results">
-            <h3>Artists</h3>
-            <div className="artists-grid">
-              {mockSearchResults.artists.map((artist) => (
-                <div key={artist.id} className="artist-card">
-                  <img src={artist.image} alt={artist.title} />
-                  <h4>{artist.title}</h4>
-                </div>
-              ))}
-            </div>
-          </section>
+          )}
         </div>
       ) : (
         <div className="search-empty">

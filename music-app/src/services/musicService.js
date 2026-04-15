@@ -7,29 +7,39 @@ const SAAVN_API = 'https://jiosaavn-api-privatecvc2.vercel.app';
 const PREFERRED_QUALITY = '96kbps'; // DO NOT change - higher qualities are DRM encrypted
 
 const mapSongItem = (item) => {
-  // Find 96kbps URL (unencrypted, plays fully with vocals)
+  // Extract download URLs
+  const downloadUrls = item.downloadUrl || [];
+  
+  // Find highest quality unencrypted stream (96kbps is safe)
+  // Fallback chain: 96kbps → 48kbps → 12kbps
+  const qualities = ['96kbps', '48kbps', '12kbps'];
   let streamUrl = null;
-  if (item.downloadUrl && item.downloadUrl.length > 0) {
-    const preferred = item.downloadUrl.find(u => u.quality === PREFERRED_QUALITY);
-    // Fallback chain: 96kbps → 48kbps → 12kbps (all unencrypted)
-    const fallback48 = item.downloadUrl.find(u => u.quality === '48kbps');
-    const fallback12 = item.downloadUrl.find(u => u.quality === '12kbps');
-    streamUrl = (preferred || fallback48 || fallback12)?.link || null;
+  
+  for (const q of qualities) {
+    const found = downloadUrls.find(u => u.quality === q);
+    if (found?.link) {
+      streamUrl = found.link;
+      break;
+    }
+  }
+
+  // If none of those, take the first available one as last resort
+  if (!streamUrl && downloadUrls.length > 0) {
+    streamUrl = downloadUrls[0].link;
   }
 
   return {
     id: item.id,
-    title: item.name,
+    title: item.name?.replace(/&quot;/g, '"')?.replace(/&amp;/g, '&') || 'Unknown',
     artist: item.primaryArtists || 'Unknown Artist',
-    thumbnail: item.image?.length > 0 ? item.image[item.image.length - 1].link : '',
+    thumbnail: Array.isArray(item.image) && item.image.length > 0 
+      ? item.image[item.image.length - 1].link 
+      : 'https://via.placeholder.com/300',
     duration: parseInt(item.duration) || 0,
     streamUrl,
-    hasLyrics: item.hasLyrics === 'true' || item.hasLyrics === true,
-    language: item.language || '',
     album: item.album?.name || '',
     year: item.year || '',
-    views: parseInt(item.playCount) || 0,
-    jiosaavnUrl: item.url || '',
+    playCount: parseInt(item.playCount) || 0
   };
 };
 
