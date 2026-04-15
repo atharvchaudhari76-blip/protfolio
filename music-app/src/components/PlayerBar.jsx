@@ -124,7 +124,6 @@ const PlayerBar = () => {
         </div>
         
         <div className="progress-container">
-          <span className="time current">{formatTime(playedSeconds)}</span>
           <div className="progress-bar-wrapper">
             <input
               type="range"
@@ -140,7 +139,10 @@ const PlayerBar = () => {
               style={{ width: `${(playedSeconds / (duration || 1)) * 100}%` }}
             ></div>
           </div>
-          <span className="time total">{formatTime(duration)}</span>
+          <div className="progress-time-info">
+            <span className="time current">{formatTime(playedSeconds)}</span>
+            <span className="time total">{formatTime(duration)}</span>
+          </div>
         </div>
       </div>
 

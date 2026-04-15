@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (credentials) => {
     // Mock login
-    setUser({ id: 1, name: credentials.email.split('@')[0] });
+    setUser({ id: 1, name: credentials.userId || 'User' });
   };
 
   const logout = () => {
