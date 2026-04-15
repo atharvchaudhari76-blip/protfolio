@@ -11,7 +11,7 @@ const Sidebar = ({ setView, activeView }) => {
   return (
     <div className="sidebar">
       <div className="logo">
-        <h1>MusicApp</h1>
+        <h1>AesthetiCore</h1>
       </div>
       <nav className="nav-menu">
         {menuItems.map((item) => {

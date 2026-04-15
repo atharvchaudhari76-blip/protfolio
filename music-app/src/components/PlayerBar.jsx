@@ -83,6 +83,7 @@ const PlayerBar = () => {
     <div className="player-bar">
       <div className="player-left">
         <div className="player-art-container">
+          <div className={`playing-animation-overlay ${isPlaying ? 'active' : ''}`}></div>
           {currentTrack.thumbnail ? (
             <img src={currentTrack.thumbnail} alt={currentTrack.title} className="now-playing-art" />
           ) : (

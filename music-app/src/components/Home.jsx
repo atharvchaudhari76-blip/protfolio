@@ -30,7 +30,7 @@ const Home = () => {
     <div className="home">
       <section className="hero">
         <h2>Good evening</h2>
-        <p className="section-subtitle">Trending and top hits for you</p>
+        <p className="section-subtitle">Curated trending hits and personalized recommendations</p>
       </section>
 
       <section className="recently-played">
