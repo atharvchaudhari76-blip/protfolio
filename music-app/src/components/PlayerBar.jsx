@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
-  SkipBack, Play, Pause, SkipForward, Volume2, Maximize2, 
-  VolumeX, Shuffle, Repeat, Music 
+  SkipBack, Play, Pause, SkipForward, Volume2, 
+  VolumeX, Shuffle, Repeat, Music, Heart, Mic2, ListMusic, MonitorSpeaker
 } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
 
@@ -81,9 +81,9 @@ const PlayerBar = () => {
 
   return (
     <div className="player-bar">
+      {/* Left Section: Track Info */}
       <div className="player-left">
         <div className="player-art-container">
-          <div className={`playing-animation-overlay ${isPlaying ? 'active' : ''}`}></div>
           {currentTrack.thumbnail ? (
             <img src={currentTrack.thumbnail} alt={currentTrack.title} className="now-playing-art" />
           ) : (
@@ -91,11 +91,13 @@ const PlayerBar = () => {
           )}
         </div>
         <div className="track-info">
-          <h4>{currentTrack.title}</h4>
-          <p>{currentTrack.artist}</p>
+          <h4 className="player-track-title">{currentTrack.title}</h4>
+          <p className="player-track-artist">{currentTrack.artist}</p>
         </div>
+        <button className="icon-btn heart-btn"><Heart size={18} /></button>
       </div>
 
+      {/* Middle Section: Controls & Progress */}
       <div className="player-center">
         <div className="player-controls">
           <button 
@@ -103,13 +105,13 @@ const PlayerBar = () => {
             onClick={toggleShuffle}
             title="Shuffle"
           >
-            <Shuffle size={18} />
+            <Shuffle size={16} />
           </button>
           <button className="control-btn" onClick={playPrevious} title="Previous">
             <SkipBack size={20} fill="currentColor" />
           </button>
-          <button className="play-btn" onClick={togglePlay} title={isPlaying ? 'Pause' : 'Play'}>
-            {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}
+          <button className="play-btn-circle" onClick={togglePlay} title={isPlaying ? 'Pause' : 'Play'}>
+            {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" style={{ marginLeft: '4px' }} />}
           </button>
           <button className="control-btn" onClick={playNext} title="Next">
             <SkipForward size={20} fill="currentColor" />
@@ -119,13 +121,14 @@ const PlayerBar = () => {
             onClick={toggleRepeat}
             title="Repeat"
           >
-            <Repeat size={18} />
+            <Repeat size={16} />
             {repeatMode === 'one' && <span className="repeat-badge">1</span>}
           </button>
         </div>
         
-        <div className="progress-container">
-          <div className="progress-bar-wrapper">
+        <div className="playback-bar">
+          <span className="time-text">{formatTime(playedSeconds)}</span>
+          <div className="progress-bar-container">
             <input
               type="range"
               min="0"
@@ -133,32 +136,41 @@ const PlayerBar = () => {
               step="0.1"
               value={playedSeconds}
               onChange={handleSeek}
-              className="main-progress-bar"
+              className="player-slider"
+              style={{ '--progress': `${(playedSeconds / (duration || 1)) * 100}%` }}
             />
             <div 
-              className="progress-fill" 
+              className="player-progress-fill" 
               style={{ width: `${(playedSeconds / (duration || 1)) * 100}%` }}
             ></div>
           </div>
-          <div className="progress-time-info">
-            <span className="time current">{formatTime(playedSeconds)}</span>
-            <span className="time total">{formatTime(duration)}</span>
-          </div>
+          <span className="time-text">{formatTime(duration)}</span>
         </div>
       </div>
 
+      {/* Right Section: Utilities */}
       <div className="player-right">
-        <div className="volume-control">
-          {volume === 0 ? <VolumeX size={20} /> : <Volume2 size={20} />}
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={volume}
-            onChange={handleVolumeChange}
-            className="volume-slider"
-          />
+        <button className="utility-btn"><Mic2 size={16} /></button>
+        <button className="utility-btn"><ListMusic size={16} /></button>
+        <button className="utility-btn"><MonitorSpeaker size={16} /></button>
+        <div className="volume-wrapper">
+          {volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
+          <div className="progress-bar-container volume-bar">
+             <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="player-slider"
+                style={{ '--progress': `${volume * 100}%` }}
+              />
+              <div 
+                className="player-progress-fill" 
+                style={{ width: `${volume * 100}%` }}
+              ></div>
+          </div>
         </div>
       </div>
 

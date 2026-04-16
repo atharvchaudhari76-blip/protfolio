@@ -1,78 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import { Play, MoreHorizontal } from 'lucide-react';
-import { getTrending } from '../services/musicService';
+import { getTrending, searchMusic } from '../services/musicService';
 import { useAudio } from '../context/AudioContext';
+import SongCard from './SongCard';
 
 const Home = () => {
-  const [trendingTracks, setTrendingTracks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { playTrack, currentTrack, isPlaying } = useAudio();
+  const [songs, setSongs] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const { playTrack } = useAudio();
 
   useEffect(() => {
-    const fetchTrending = async () => {
-      try {
-        const tracks = await getTrending();
-        setTrendingTracks(tracks);
-      } catch (error) {
-        console.error('Failed to fetch trending:', error);
-      } finally {
-        setIsLoading(false);
-      }
+    const fetchMusic = async () => {
+      const allSongs = await getTrending();
+      setSongs(allSongs);
+      
+      // Create some mock categories
+      setCategories([
+        { id: '1', title: 'Top Hits', tracks: allSongs.slice(0, 6) },
+        { id: '2', title: 'Recently Played', tracks: allSongs.slice(2, 8) },
+        { id: '3', title: 'Made For You', tracks: allSongs.slice(4, 10) }
+      ]);
     };
-    fetchTrending();
+    fetchMusic();
   }, []);
 
-  const handlePlay = (track) => {
-    playTrack(track, trendingTracks);
-  };
-
   return (
-    <div className="home">
-      <section className="hero">
-        <h2>Good evening</h2>
-        <p className="section-subtitle">Curated trending hits and personalized recommendations</p>
-      </section>
-
-      <section className="recently-played">
-        <h3>Trending Tracks</h3>
-        {isLoading ? (
-          <div className="loading-state">
-            <div className="loading-spinner"></div>
-            <p>Loading trending tracks...</p>
-          </div>
-        ) : (
-          <div className="tracks-grid">
-            {trendingTracks.map((track) => (
-              <div 
-                key={track.id} 
-                className={`track-item ${currentTrack?.id === track.id ? 'active' : ''}`}
-                onClick={() => handlePlay(track)}
-              >
-                <div className="track-play">
-                  {currentTrack?.id === track.id && isPlaying ? (
-                    <div className="playing-animation pink">
-                       <span></span><span></span><span></span>
-                    </div>
-                  ) : (
-                    <Play size={20} fill="#fff" />
-                  )}
-                </div>
-                <div className="track-info">
-                  <p className="track-title">{track.title}</p>
-                  <p className="track-artist">{track.artist}</p>
-                </div>
-                <span className="track-duration">
-                  {Math.floor(track.duration / 60)}:{(track.duration % 60).toString().padStart(2, '0')}
-                </span>
-                <MoreHorizontal size={20} className="track-more" />
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+    <div className="home-content">
+      <div className="home-categories">
+        {categories.map(category => (
+          <section key={category.id} className="home-section">
+            <h2 className="section-title">{category.title}</h2>
+            <div className="song-grid">
+              {category.tracks.map(song => (
+                <SongCard 
+                  key={song.id} 
+                  song={song} 
+                  onClick={() => playTrack(song)} 
+                />
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
     </div>
   );
 };
 
 export default Home;
-

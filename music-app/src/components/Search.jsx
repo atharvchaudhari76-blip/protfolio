@@ -1,16 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { Search as SearchIcon, Music, Play } from 'lucide-react';
+import { Search as SearchIcon } from 'lucide-react';
 import { searchMusic } from '../services/musicService';
 import { useAudio } from '../context/AudioContext';
+import SongCard from './SongCard';
 
 const Search = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { playTrack, currentTrack, isPlaying } = useAudio();
+  const { playTrack } = useAudio();
+
+  const browseCategories = [
+    { title: 'Music', color: '#E13300' },
+    { title: 'Podcasts', color: '#27856A' },
+    { title: 'Live Events', color: '#1E3264' },
+    { title: 'Made For You', color: '#8D67AB' },
+    { title: 'New Releases', color: '#7358FF' },
+    { title: 'Hip-Hop', color: '#BA5D07' },
+    { title: 'Pop', color: '#148A08' },
+    { title: 'Mood', color: '#D84000' },
+  ];
 
   useEffect(() => {
-    const timer = setTimeout(async () => {
+    const handleSearch = async () => {
       if (query.trim()) {
         setIsLoading(true);
         try {
@@ -24,20 +36,17 @@ const Search = () => {
       } else {
         setResults([]);
       }
-    }, 500); // 500ms debounce
+    };
 
+    const timer = setTimeout(handleSearch, 500);
     return () => clearTimeout(timer);
   }, [query]);
 
-  const handlePlay = (song) => {
-    playTrack(song, results);
-  };
-
   return (
-    <div className="search">
+    <div className="search-container">
       <div className="search-header">
-        <div className="search-bar">
-          <SearchIcon size={20} />
+        <div className="search-input-wrapper">
+          <SearchIcon size={20} className="search-icon" />
           <input
             type="text"
             placeholder="What do you want to listen to?"
@@ -47,60 +56,46 @@ const Search = () => {
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="search-loading">
-          <div className="loading-spinner"></div>
-          <p>Searching...</p>
-        </div>
-      ) : query ? (
-        <div className="search-results">
-          {results.length > 0 ? (
-            <>
-              <section className="songs-results">
-                <h3>Songs</h3>
-                <div className="tracks-grid">
-                  {results.map((song) => (
-                    <div 
-                      key={song.id} 
-                      className={`track-item ${currentTrack?.id === song.id ? 'active' : ''}`}
-                      onClick={() => handlePlay(song)}
-                    >
-                      <div className="track-play">
-                        {currentTrack?.id === song.id && isPlaying ? (
-                          <div className="playing-animation">
-                            <span></span><span></span><span></span>
-                          </div>
-                        ) : (
-                          <Play size={20} fill="#fff" />
-                        )}
-                      </div>
-                      <div className="track-info">
-                        <p className="track-title">{song.title}</p>
-                        <p className="track-artist">{song.artist}</p>
-                      </div>
-                      <span className="track-duration">
-                        {Math.floor(song.duration / 60)}:{(song.duration % 60).toString().padStart(2, '0')}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </>
-          ) : (
-            <div className="search-empty">
-              <SearchIcon size={64} />
-              <h3>No results found for "{query}"</h3>
-              <p>Try searching for something else</p>
+      <div className="search-content">
+        {query ? (
+          isLoading ? (
+            <div className="loading-state">Searching...</div>
+          ) : results.length > 0 ? (
+            <div className="search-results">
+              <h2 className="section-title">Songs</h2>
+              <div className="song-grid">
+                {results.map((song) => (
+                  <SongCard 
+                    key={song.id} 
+                    song={song} 
+                    onClick={() => playTrack(song)} 
+                  />
+                ))}
+              </div>
             </div>
-          )}
-        </div>
-      ) : (
-        <div className="search-empty">
-          <SearchIcon size={64} />
-          <h3>Start typing to search</h3>
-          <p>Songs, artists, podcasts and more</p>
-        </div>
-      )}
+          ) : (
+            <div className="empty-state">
+              <h2>No results found for "{query}"</h2>
+              <p>Please make sure your words are spelled correctly or use fewer or different keywords.</p>
+            </div>
+          )
+        ) : (
+          <div className="browse-section">
+            <h2 className="section-title">Browse all</h2>
+            <div className="browse-grid">
+              {browseCategories.map((cat, index) => (
+                <div 
+                  key={index} 
+                  className="browse-card" 
+                  style={{ backgroundColor: cat.color }}
+                >
+                  <h3>{cat.title}</h3>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
