@@ -43,6 +43,8 @@ const SongCard = ({ song, onClick }) => {
     setShowPlaylists(false);
   };
 
+  const songImage = song.image?.[2]?.link || song.image?.[1]?.link || song.image?.[0]?.link || '';
+
   return (
     <div
       className={`song-card ${isActive ? 'active' : ''}`}
@@ -50,8 +52,8 @@ const SongCard = ({ song, onClick }) => {
     >
       <div className="card-image-container">
         <img
-          src={song.thumbnail}
-          alt={song.title}
+          src={songImage}
+          alt={song.name}
           className="card-image"
         />
         

@@ -23,6 +23,16 @@ const PlayerBar = () => {
     addToLibrary,
     removeFromLibrary
   } = useAudio();
+  
+  const playNextRef = useRef(playNext);
+  const playPreviousRef = useRef(playPrevious);
+  const togglePlayRef = useRef(togglePlay);
+
+  useEffect(() => {
+    playNextRef.current = playNext;
+    playPreviousRef.current = playPrevious;
+    togglePlayRef.current = togglePlay;
+  }, [playNext, playPrevious, togglePlay]);
 
   const [playedSeconds, setPlayedSeconds] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -45,21 +55,23 @@ const PlayerBar = () => {
   // Configure Media Session API for mobile OS controls
   useEffect(() => {
     if ('mediaSession' in navigator && currentTrack) {
+      const trackImage = currentTrack.image?.[2]?.link || currentTrack.image?.[1]?.link || currentTrack.image?.[0]?.link || '';
+      
       navigator.mediaSession.metadata = new window.MediaMetadata({
-        title: currentTrack.title,
+        title: currentTrack.name,
         artist: currentTrack.artist,
         artwork: [
-          { src: currentTrack.thumbnail || 'https://via.placeholder.com/96', sizes: '96x96', type: 'image/jpeg' },
-          { src: currentTrack.thumbnail || 'https://via.placeholder.com/512', sizes: '512x512', type: 'image/jpeg' }
+          { src: trackImage || 'https://via.placeholder.com/96', sizes: '96x96', type: 'image/jpeg' },
+          { src: trackImage || 'https://via.placeholder.com/512', sizes: '512x512', type: 'image/jpeg' }
         ]
       });
 
-      navigator.mediaSession.setActionHandler('play', togglePlay);
-      navigator.mediaSession.setActionHandler('pause', togglePlay);
-      navigator.mediaSession.setActionHandler('previoustrack', playPrevious);
-      navigator.mediaSession.setActionHandler('nexttrack', playNext);
+      navigator.mediaSession.setActionHandler('play', () => togglePlayRef.current());
+      navigator.mediaSession.setActionHandler('pause', () => togglePlayRef.current());
+      navigator.mediaSession.setActionHandler('previoustrack', () => playPreviousRef.current());
+      navigator.mediaSession.setActionHandler('nexttrack', () => playNextRef.current());
     }
-  }, [currentTrack, togglePlay, playPrevious, playNext]);
+  }, [currentTrack]);
 
   // Sync volume
   useEffect(() => {
@@ -106,14 +118,14 @@ const PlayerBar = () => {
       {/* Left Section: Track Info */}
       <div className="player-left">
         <div className="player-art-container">
-          {currentTrack.thumbnail ? (
-            <img src={currentTrack.thumbnail} alt={currentTrack.title} className="now-playing-art" />
+          {currentTrack.image ? (
+            <img src={currentTrack.image[1]?.link || currentTrack.image[0]?.link} alt={currentTrack.name} className="now-playing-art" />
           ) : (
             <div className="art-placeholder"><Music size={20} /></div>
           )}
         </div>
         <div className="track-info">
-          <h4 className="player-track-title">{currentTrack.title}</h4>
+          <h4 className="player-track-title">{currentTrack.name}</h4>
           <p className="player-track-artist">{currentTrack.artist}</p>
         </div>
         <button 

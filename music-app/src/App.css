@@ -331,6 +331,15 @@
   box-shadow: 0 8px 16px rgba(0,0,0,0.3);
 }
 
+@media (max-width: 768px) {
+  .card-play-button {
+    opacity: 1;
+    transform: translateY(0);
+    width: 40px;
+    height: 40px;
+  }
+}
+
 .song-card:hover .card-play-button {
   opacity: 1;
   transform: translateY(0);
@@ -354,6 +363,12 @@
 
 .song-card:hover .card-overlay-actions {
   opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .card-overlay-actions {
+    opacity: 1;
+  }
 }
 
 .card-action-btn {
@@ -974,5 +989,10 @@
   .time-text {
     min-width: 30px;
     font-size: 10px;
+  }
+
+  .song-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
   }
 }
