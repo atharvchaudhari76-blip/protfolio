@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { getRecommendations } from '../services/musicService';
 
 const AudioContext = createContext();
 
@@ -65,7 +66,7 @@ export const AudioProvider = ({ children }) => {
     }
   };
 
-  const playNext = () => {
+  const playNext = async () => {
     console.log('AudioContext: playNext called', { queueLength: queue.length, currentTrackId: currentTrack?.id });
     if (!currentTrack || queue.length === 0) return;
     
@@ -86,7 +87,20 @@ export const AudioProvider = ({ children }) => {
       console.log('AudioContext: end of queue reached, looping to start');
       setCurrentTrack(queue[0]);
     } else {
-      console.log('AudioContext: end of queue reached, stopping playback');
+      console.log('AudioContext: end of queue reached, fetching recommendations...');
+      const recommendations = await getRecommendations(currentTrack);
+      
+      if (recommendations && recommendations.length > 0) {
+        // Add unique songs to the queue
+        const newSongs = recommendations.filter(s => !queue.find(qS => qS.id === s.id));
+        if (newSongs.length > 0) {
+          setQueue([...queue, ...newSongs]);
+          setCurrentTrack(newSongs[0]);
+          return;
+        }
+      }
+      
+      console.log('AudioContext: no recommendations found, stopping playback');
       setIsPlaying(false);
     }
   };

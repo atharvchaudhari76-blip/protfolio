@@ -106,4 +106,21 @@ export const getTrending = async () => {
   return results;
 };
 
+export const getRecommendations = async (song) => {
+  if (!song || !song.artist) return [];
+  
+  try {
+    // Search for the primary artist to find similar/related tracks
+    // Extracting first name or main artist to broaden the search if needed
+    const mainArtist = song.artist.split(',')[0].trim();
+    const results = await searchMusic(mainArtist);
+    
+    // Filter out the current song and ensure we have unique recommendations
+    return results.filter(s => s.id !== song.id).slice(0, 10);
+  } catch (error) {
+    console.error('Failed to get recommendations:', error);
+    return [];
+  }
+};
+
 export const getStreamUrl = async () => null;
