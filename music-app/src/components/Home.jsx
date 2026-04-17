@@ -35,7 +35,7 @@ const Home = () => {
                 <SongCard 
                   key={song.id} 
                   song={song} 
-                  onClick={() => playTrack(song)} 
+                  onClick={() => playTrack(song, category.tracks)} 
                 />
               ))}
             </div>

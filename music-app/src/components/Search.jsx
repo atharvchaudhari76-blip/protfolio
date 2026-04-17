@@ -68,7 +68,7 @@ const Search = () => {
                   <SongCard 
                     key={song.id} 
                     song={song} 
-                    onClick={() => playTrack(song)} 
+                    onClick={() => playTrack(song, results)} 
                   />
                 ))}
               </div>
@@ -88,6 +88,7 @@ const Search = () => {
                   key={index} 
                   className="browse-card" 
                   style={{ backgroundColor: cat.color }}
+                  onClick={() => setQuery(cat.title)}
                 >
                   <h3>{cat.title}</h3>
                 </div>

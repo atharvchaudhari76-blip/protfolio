@@ -10,6 +10,7 @@ import { useAuth } from './context/AuthContext';
 
 function App() {
   const [activeView, setActiveView] = useState('home');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user } = useAuth();
 
   if (!user) {
@@ -25,12 +26,20 @@ function App() {
     }
   };
 
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
     <div className="app-container">
-      <div className="sidebar-wrapper">
+      <div 
+        className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} 
+        onClick={() => setIsSidebarOpen(false)} 
+      />
+      <div className={`sidebar-wrapper ${isSidebarOpen ? 'active' : ''}`}>
         <Sidebar 
-          setView={setActiveView} 
+          setView={(view) => {
+            setActiveView(view);
+            setIsSidebarOpen(false);
+          }} 
           activeView={activeView} 
         />
       </div>
@@ -47,6 +56,12 @@ function App() {
       <div className="player-wrapper">
         <PlayerBar />
       </div>
+
+      <BottomNav 
+        activeView={activeView} 
+        setView={setActiveView} 
+        toggleSidebar={toggleSidebar} 
+      />
     </div>
   );
 }

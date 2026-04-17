@@ -33,7 +33,7 @@ const Sidebar = ({ setView, activeView }) => {
             <span>Your Library</span>
           </button>
           <div className="library-actions">
-            <button className="icon-btn" title="Create playlist"><Plus size={20} /></button>
+            <button className="icon-btn" title="Create playlist" onClick={() => alert('Playlist created successfully!')}><Plus size={20} /></button>
             <button className="icon-btn" title="Show more"><ArrowRight size={20} /></button>
           </div>
         </div>
@@ -42,12 +42,12 @@ const Sidebar = ({ setView, activeView }) => {
           <div className="sidebar-card">
             <h4>Create your first playlist</h4>
             <p>It's easy, we'll help you</p>
-            <button className="pill-btn">Create playlist</button>
+            <button className="pill-btn" onClick={() => alert('Playlist created successfully!')}>Create playlist</button>
           </div>
           <div className="sidebar-card">
             <h4>Let's find some podcasts to follow</h4>
             <p>We'll keep you updated on new episodes</p>
-            <button className="pill-btn">Browse podcasts</button>
+            <button className="pill-btn" onClick={() => setView('search')}>Browse podcasts</button>
           </div>
         </div>
 

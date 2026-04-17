@@ -664,9 +664,63 @@
 
 @media (max-width: 768px) {
   .app-container {
-    grid-template-columns: 64px 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr var(--player-height) var(--bottom-nav-height);
   }
+  
   /* Hide text completely on very small screens */
   .nav-item { padding: 12px; justify-content: center; }
   .nav-item span { display: none; }
+
+  /* Player Mobile Fixes */
+  .player-wrapper {
+    padding: 0 8px;
+  }
+  .player-bar {
+    gap: 4px;
+  }
+  .player-left {
+    min-width: unset;
+    width: 40%;
+    gap: 8px;
+  }
+  .player-art-container {
+    width: 40px;
+    height: 40px;
+  }
+  .player-track-title {
+    font-size: 13px;
+  }
+  .heart-btn {
+    display: none;
+  }
+
+  .player-center {
+    max-width: unset;
+    width: 60%;
+    flex: 1;
+  }
+
+  .player-right {
+    display: none; /* Hide volume controls on mobile */
+  }
+
+  .control-btn[title="Shuffle"], 
+  .control-btn[title="Repeat"] {
+    display: none; /* Hide shuffle/repeat on small screens to save space */
+  }
+
+  .play-btn-circle {
+    width: 28px;
+    height: 28px;
+  }
+  .play-btn-circle svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .time-text {
+    min-width: 30px;
+    font-size: 10px;
+  }
 }

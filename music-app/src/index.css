@@ -25,6 +25,7 @@
   --player-height: 90px;
   --sidebar-width: 240px;
   --panel-gap: 8px;
+  --bottom-nav-height: 64px;
 
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   color-scheme: dark;
@@ -332,7 +333,7 @@ input[type="range"]::-webkit-slider-runnable-track {
     padding-bottom: env(safe-area-inset-bottom, 0px);
     justify-content: space-around;
     align-items: center;
-    z-index: 150;
+    z-index: 1000;
   }
 
   .hide-mobile { display: none !important; }

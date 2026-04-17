@@ -39,6 +39,25 @@ const PlayerBar = () => {
     }
   }, [isPlaying, currentTrack, setIsPlaying]);
 
+  // Configure Media Session API for mobile OS controls
+  useEffect(() => {
+    if ('mediaSession' in navigator && currentTrack) {
+      navigator.mediaSession.metadata = new window.MediaMetadata({
+        title: currentTrack.title,
+        artist: currentTrack.artist,
+        artwork: [
+          { src: currentTrack.thumbnail || 'https://via.placeholder.com/96', sizes: '96x96', type: 'image/jpeg' },
+          { src: currentTrack.thumbnail || 'https://via.placeholder.com/512', sizes: '512x512', type: 'image/jpeg' }
+        ]
+      });
+
+      navigator.mediaSession.setActionHandler('play', togglePlay);
+      navigator.mediaSession.setActionHandler('pause', togglePlay);
+      navigator.mediaSession.setActionHandler('previoustrack', playPrevious);
+      navigator.mediaSession.setActionHandler('nexttrack', playNext);
+    }
+  }, [currentTrack, togglePlay, playPrevious, playNext]);
+
   // Sync volume
   useEffect(() => {
     if (audioRef.current) {
