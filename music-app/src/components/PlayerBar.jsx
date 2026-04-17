@@ -144,13 +144,27 @@ const PlayerBar = () => {
           >
             <Shuffle size={16} />
           </button>
-          <button className="control-btn" onClick={playPrevious} title="Previous">
+          <button 
+            className="control-btn" 
+            onClick={() => {
+              console.log('PlayerBar: Previous button clicked');
+              playPrevious();
+            }} 
+            title="Previous"
+          >
             <SkipBack size={20} fill="currentColor" />
           </button>
           <button className="play-btn-circle" onClick={togglePlay} title={isPlaying ? 'Pause' : 'Play'}>
             {isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" style={{ marginLeft: '4px' }} />}
           </button>
-          <button className="control-btn" onClick={playNext} title="Next">
+          <button 
+            className="control-btn" 
+            onClick={() => {
+              console.log('PlayerBar: Next button clicked');
+              playNext();
+            }} 
+            title="Next"
+          >
             <SkipForward size={20} fill="currentColor" />
           </button>
           <button 

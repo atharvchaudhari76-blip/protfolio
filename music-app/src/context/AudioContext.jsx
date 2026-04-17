@@ -66,12 +66,12 @@ export const AudioProvider = ({ children }) => {
   };
 
   const playNext = () => {
+    console.log('AudioContext: playNext called', { queueLength: queue.length, currentTrackId: currentTrack?.id });
     if (!currentTrack || queue.length === 0) return;
     
     if (repeatMode === 'one') {
-      // Replay same track
       const track = currentTrack;
-      setCurrentTrack(null); // Force reload
+      setCurrentTrack(null);
       setTimeout(() => setCurrentTrack(track), 10);
       return;
     }
@@ -80,23 +80,34 @@ export const AudioProvider = ({ children }) => {
     const nextIndex = currentIndex + 1;
 
     if (nextIndex < queue.length) {
+      console.log(`AudioContext: skipping to next track at index ${nextIndex}`);
       setCurrentTrack(queue[nextIndex]);
     } else if (repeatMode === 'all') {
+      console.log('AudioContext: end of queue reached, looping to start');
       setCurrentTrack(queue[0]);
     } else {
+      console.log('AudioContext: end of queue reached, stopping playback');
       setIsPlaying(false);
     }
   };
 
   const playPrevious = () => {
+    console.log('AudioContext: playPrevious called');
     if (!currentTrack || queue.length === 0) return;
     const currentIndex = queue.findIndex(t => t.id === currentTrack.id);
     const prevIndex = currentIndex - 1;
 
     if (prevIndex >= 0) {
+      console.log(`AudioContext: skipping to previous track at index ${prevIndex}`);
       setCurrentTrack(queue[prevIndex]);
     } else if (repeatMode === 'all') {
+      console.log('AudioContext: start of queue reached, looping to end');
       setCurrentTrack(queue[queue.length - 1]);
+    } else {
+      // If at the beginning, just restart the song
+      const track = currentTrack;
+      setCurrentTrack(null);
+      setTimeout(() => setCurrentTrack(track), 10);
     }
   };
 

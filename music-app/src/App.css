@@ -789,17 +789,135 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive Overrides */
-@media (max-width: 1100px) {
-  .app-container {
-    grid-template-columns: 80px 1fr;
-  }
-  .nav-item span { display: none; }
-  .library-header .nav-item span { display: none; }
-  .library-content, .library-actions { display: none; }
+/* Library UI */
+.library {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 24px;
+}
+
+.playlists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.playlist-card.library-playlist {
+  position: relative;
+  background: #181818;
+  border-radius: var(--radius-lg);
+  aspect-ratio: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  overflow: hidden;
+}
+
+.playlist-card.library-playlist:hover {
+  background: #282828;
+  transform: translateY(-4px);
+}
+
+.playlist-color {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--bg-elevated) 0%, #121212 100%);
+  opacity: 0.8;
+}
+
+.playlist-info {
+  position: relative;
+  z-index: 1;
+}
+
+.playlist-info h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-base);
+}
+
+.playlist-info p {
+  font-size: 14px;
+  color: var(--text-subdued);
+  margin: 4px 0 0 0;
+}
+
+.tracks-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.track-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.2s ease;
+}
+
+.track-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.track-play {
+  color: var(--text-subdued);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.track-item:hover .track-play {
+  opacity: 1;
+  color: var(--text-base);
+}
+
+.track-duration {
+  font-size: 13px;
+  color: var(--text-subdued);
+  min-width: 45px;
+  text-align: right;
 }
 
 @media (max-width: 768px) {
+  .playlists-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  
+  .playlist-card.library-playlist {
+    padding: 12px;
+  }
+
+  .playlist-info h3 {
+    font-size: 15px;
+  }
+
+  .track-item {
+    gap: 12px;
+    padding: 10px 4px;
+  }
+
+  .track-play {
+    opacity: 1;
+    display: flex;
+    align-items: center;
+  }
+
+  .control-btn {
+    padding: 10px;
+  }
+
+  .control-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
   .app-container {
     grid-template-columns: 1fr;
     grid-template-rows: 1fr var(--player-height) var(--bottom-nav-height);
