@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Plus, Play, MoreHorizontal } from 'lucide-react';
+import { Plus, Play, MoreHorizontal, Heart } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
 
 const Library = () => {
-  const { library, playlists, createPlaylist, playTrack } = useAudio();
-  const [isCreating, setIsCreating] = useState(false);
+  const { library, playlists, createPlaylist, playTrack, addToPlaylist, removeFromLibrary, addToLibrary } = useAudio();
+  const [activeMenuTrackId, setActiveMenuTrackId] = useState(null);
 
   const handleCreatePlaylist = () => {
     const name = window.prompt("Enter playlist name:", "My Playlist #" + (playlists.length + 1));
@@ -19,6 +19,27 @@ const Library = () => {
     } else {
       alert('This playlist is empty.');
     }
+  };
+
+  const handleToggleMenu = (e, trackId) => {
+    e.stopPropagation();
+    setActiveMenuTrackId(prev => prev === trackId ? null : trackId);
+  };
+
+  const handleAddToPlaylist = (e, playlistId, track) => {
+    e.stopPropagation();
+    addToPlaylist(playlistId, track);
+    setActiveMenuTrackId(null);
+  };
+
+  const handleNewPlaylist = (e, track) => {
+    e.stopPropagation();
+    const name = window.prompt("Playlist name:");
+    if (name) {
+      const newPlaylist = createPlaylist(name);
+      addToPlaylist(newPlaylist.id, track);
+    }
+    setActiveMenuTrackId(null);
   };
 
   return (
@@ -69,7 +90,7 @@ const Library = () => {
               <div 
                 key={track.id} 
                 className="track-item" 
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: 'pointer', position: 'relative' }}
                 onClick={() => playTrack(track, library)}
               >
                 <div className="track-play">
@@ -79,10 +100,35 @@ const Library = () => {
                   <p className="track-title">{track.title}</p>
                   <p className="track-artist">{track.artist}</p>
                 </div>
-                <span className="track-duration">
-                  {Math.floor(track.duration / 60)}:{(track.duration % 60).toString().padStart(2, '0')}
-                </span>
-                <MoreHorizontal size={20} />
+                
+                <div className="track-actions-wrapper">
+                  <span className="track-duration">
+                    {Math.floor(track.duration / 60)}:{(track.duration % 60).toString().padStart(2, '0')}
+                  </span>
+                  
+                  <button 
+                    className="icon-btn track-menu-btn"
+                    onClick={(e) => handleToggleMenu(e, track.id)}
+                  >
+                    <MoreHorizontal size={20} />
+                  </button>
+
+                  {activeMenuTrackId === track.id && (
+                    <div className="playlist-dropdown track-dropdown" onClick={(e) => e.stopPropagation()}>
+                      <div className="dropdown-header">Add to playlist</div>
+                      <div className="dropdown-content">
+                        <button className="dropdown-item create" onClick={(e) => handleNewPlaylist(e, track)}>
+                          <Plus size={14} /> New Playlist
+                        </button>
+                        {playlists.map(p => (
+                          <button key={p.id} className="dropdown-item" onClick={(e) => handleAddToPlaylist(e, p.id, track)}>
+                            {p.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             ))
           )}
