@@ -268,16 +268,55 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const btn = contactForm.querySelector('button[type="submit"]');
             const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<span>Message Sent!</span> <i class="fas fa-check"></i>';
-            btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+            
+            // Show loading state
+            btn.innerHTML = '<span>Sending...</span> <i class="fas fa-spinner fa-spin"></i>';
             btn.disabled = true;
 
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.style.background = '';
-                btn.disabled = false;
-                contactForm.reset();
-            }, 3000);
+            const formData = new FormData(contactForm);
+            
+            fetch(contactForm.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    btn.innerHTML = '<span>Message Sent!</span> <i class="fas fa-check"></i>';
+                    btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+                    contactForm.reset();
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '';
+                        btn.disabled = false;
+                    }, 5000);
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwn(data, 'errors')) {
+                            alert(data["errors"].map(error => error["message"]).join(", "));
+                        } else {
+                            alert("Oops! There was a problem submitting your form");
+                        }
+                    });
+                    btn.innerHTML = '<span>Error!</span> <i class="fas fa-times"></i>';
+                    btn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = '';
+                        btn.disabled = false;
+                    }, 3000);
+                }
+            }).catch(error => {
+                alert("Oops! There was a problem submitting your form");
+                btn.innerHTML = '<span>Error!</span> <i class="fas fa-times"></i>';
+                btn.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.style.background = '';
+                    btn.disabled = false;
+                }, 3000);
+            });
         });
     }
 
