@@ -55,10 +55,10 @@ const PlayerBar = () => {
   // Configure Media Session API for mobile OS controls
   useEffect(() => {
     if ('mediaSession' in navigator && currentTrack) {
-      const trackImage = currentTrack.image?.[2]?.link || currentTrack.image?.[1]?.link || currentTrack.image?.[0]?.link || '';
+      const trackImage = currentTrack.thumbnail || '';
       
       navigator.mediaSession.metadata = new window.MediaMetadata({
-        title: currentTrack.name,
+        title: currentTrack.title,
         artist: currentTrack.artist,
         artwork: [
           { src: trackImage || 'https://via.placeholder.com/96', sizes: '96x96', type: 'image/jpeg' },
@@ -118,14 +118,22 @@ const PlayerBar = () => {
       {/* Left Section: Track Info */}
       <div className="player-left">
         <div className="player-art-container">
-          {currentTrack.image ? (
-            <img src={currentTrack.image[1]?.link || currentTrack.image[0]?.link} alt={currentTrack.name} className="now-playing-art" />
+          {currentTrack.thumbnail ? (
+            <img 
+              src={currentTrack.thumbnail} 
+              alt={currentTrack.title} 
+              className="now-playing-art" 
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://via.placeholder.com/96?text=No+Img';
+              }}
+            />
           ) : (
             <div className="art-placeholder"><Music size={20} /></div>
           )}
         </div>
         <div className="track-info">
-          <h4 className="player-track-title">{currentTrack.name}</h4>
+          <h4 className="player-track-title">{currentTrack.title}</h4>
           <p className="player-track-artist">{currentTrack.artist}</p>
         </div>
         <button 

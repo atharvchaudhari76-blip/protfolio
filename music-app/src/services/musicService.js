@@ -28,13 +28,26 @@ const mapSongItem = (item) => {
     streamUrl = downloadUrls[0].link;
   }
 
+  // Handle image structure variations
+  let thumbnail = 'https://via.placeholder.com/300';
+  if (Array.isArray(item.image) && item.image.length > 0) {
+    thumbnail = item.image[item.image.length - 1].link;
+  } else if (typeof item.image === 'string') {
+    thumbnail = item.image;
+  } else if (item.thumbnail) {
+    thumbnail = item.thumbnail;
+  }
+
+  // Ensure HTTPS
+  if (thumbnail.startsWith('http:')) {
+    thumbnail = thumbnail.replace('http:', 'https:');
+  }
+
   return {
     id: item.id,
     title: item.name?.replace(/&quot;/g, '"')?.replace(/&amp;/g, '&') || 'Unknown',
     artist: item.primaryArtists || 'Unknown Artist',
-    thumbnail: Array.isArray(item.image) && item.image.length > 0 
-      ? item.image[item.image.length - 1].link 
-      : 'https://via.placeholder.com/300',
+    thumbnail,
     duration: parseInt(item.duration) || 0,
     streamUrl,
     album: item.album?.name || '',
@@ -93,7 +106,7 @@ export const getTrending = async () => {
       });
 
       // Sort by play count to get original version first
-      const sorted = filtered.sort((a, b) => b.views - a.views);
+      const sorted = filtered.sort((a, b) => b.playCount - a.playCount);
 
       if (sorted.length > 0) {
         results.push(sorted[0]);

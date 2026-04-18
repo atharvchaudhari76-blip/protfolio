@@ -43,7 +43,7 @@ const SongCard = ({ song, onClick }) => {
     setShowPlaylists(false);
   };
 
-  const songImage = song.image?.[2]?.link || song.image?.[1]?.link || song.image?.[0]?.link || '';
+  const songImage = song.thumbnail || '';
 
   return (
     <div
@@ -53,8 +53,12 @@ const SongCard = ({ song, onClick }) => {
       <div className="card-image-container">
         <img
           src={songImage}
-          alt={song.name}
+          alt={song.title}
           className="card-image"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = 'https://via.placeholder.com/300?text=No+Image';
+          }}
         />
         
         <div className="card-overlay-actions">
