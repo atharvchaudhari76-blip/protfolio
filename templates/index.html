@@ -11,17 +11,19 @@ experiences.{% endblock %}
         <div class="hero-content">
             <div class="hero-badge animate-fade-up">
                 <span class="badge-dot"></span>
-                Available for freelance work
+                Open for a chat & collaboration
+                <span class="handwritten" style="margin-left: 10px; font-size: 1rem;">Available now!</span>
             </div>
             <h1 class="hero-title animate-fade-up delay-1">
-                Hi, I'm <span class="gradient-text">Atharv Chaudhari.H.</span>
+                Hey there! I'm <span class="gradient-text">Atharv.</span>
             </h1>
             <p class="hero-subtitle animate-fade-up delay-2">
-                Creative Developer &amp; Designer
+                I build digital experiences that feel like <span class="gradient-text">home</span>.
             </p>
             <p class="hero-description animate-fade-up delay-3">
-                I craft beautiful, high-performance digital experiences that bring ideas to life.
-                Specializing in modern web development with a keen eye for design and user experience.
+                I'm a developer and designer who obsesses over the little details. 
+                I believe the best websites aren't just code—they're conversations. 
+                Let's make something amazing together.
             </p>
             <div class="hero-cta animate-fade-up delay-4">
                 <a href="#projects" class="btn btn-primary">
@@ -34,45 +36,28 @@ experiences.{% endblock %}
 
             </div>
             <div class="hero-stats animate-fade-up delay-5">
-                <div class="stat-item">
-                    <span class="stat-number" id="dynamic-project-count" data-count="0">0</span><span
+                <div class="stat-item preserve-3d">
+                    <span class="stat-number z-layer-1" id="dynamic-project-count" data-count="0">0</span><span
                         class="stat-suffix">+</span>
-                    <span class="stat-label">Projects</span>
+                    <span class="stat-label">Side Projects</span>
                 </div>
                 <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-number" id="dynamic-tech-count" data-count="0">0</span><span
+                <div class="stat-item preserve-3d">
+                    <span class="stat-number z-layer-1" id="dynamic-tech-count" data-count="0">0</span><span
                         class="stat-suffix">+</span>
-                    <span class="stat-label">Technologies</span>
+                    <span class="stat-label">Skills Mastered</span>
                 </div>
                 <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-number" data-count="12">0</span><span class="stat-suffix">+</span>
-                    <span class="stat-label">Happy Clients</span>
+                <div class="stat-item preserve-3d">
+                    <span class="stat-number z-layer-1" data-count="100">0</span><span class="stat-suffix">%</span>
+                    <span class="stat-label">Passion Level</span>
                 </div>
             </div>
         </div>
-        <div class="hero-visual animate-fade-up delay-2">
-            <div class="hero-card">
-                <div class="card-header">
-                    <div class="card-dots">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
-                    </div>
-                    <span class="card-title">portfolio.js</span>
-                </div>
-                <div class="card-body">
-                    <pre><code><span class="code-keyword">const</span> <span class="code-var">developer</span> = {
-  <span class="code-key">name</span>: <span class="code-string">"Atharv Chaudhari.H."</span>,
-  <span class="code-key">skills</span>: [<span class="code-string">"JavaScript"</span>, <span class="code-string">"Python"</span>, 
-           <span class="code-string">"React"</span>, <span class="code-string">"Flask"</span>],
-  <span class="code-key">passion</span>: <span class="code-string">"Building amazing UIs"</span>,
-  <span class="code-key">available</span>: <span class="code-bool">true</span>
-};
-
-<span class="code-keyword">export default</span> developer;</code></pre>
-                </div>
+        <div class="hero-visual animate-fade-up delay-2 preserve-3d">
+            <div class="blob" style="top: -20%; right: -10%;"></div>
+            <div class="avatar-container depth-lift preserve-3d">
+                <img src="{{ url_for('static', filename='avatar.png') }}" alt="Atharv Avatar" class="hero-avatar z-layer-1">
             </div>
         </div>
     </div>
@@ -99,13 +84,11 @@ experiences.{% endblock %}
                 </div>
             </div>
             <div class="about-content">
-                <h2 class="about-heading">I'm a <span class="gradient-text">creative developer</span> who loves building
-                    things for the web</h2>
-                <p>I'm a passionate developer with a strong foundation in both frontend and backend technologies. I
-                    believe in writing clean, efficient code and creating user experiences that are both beautiful and
-                    functional.</p>
-                <p>When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects,
-                    or learning about the latest trends in design and development.</p>
+                <h2 class="about-heading">I'm a <span class="gradient-text">creative tinkerer</span> who loves building for the web</h2>
+                <p>Hey! I'm Atharv. I'm 19, and I've spent the last few years teaching myself how to make the internet a more beautiful place. I don't just write code; I try to solve puzzles that make people's lives easier.</p>
+                <p>When I'm not staring at a terminal, I'm probably listening to Lo-fi, hunting for the perfect coffee bean, or trying to explain to my cat why I can't play with him during a deployment.</p>
+                
+                <div class="handwritten" style="margin: 1rem 0; font-size: 1.2rem;">"The best code is the kind that feels like magic."</div>
                 <div class="about-details">
                     <div class="detail-item">
                         <i class="fas fa-user"></i>
@@ -270,6 +253,7 @@ experiences.{% endblock %}
             <span class="section-tag">What I Do</span>
             <h2 class="section-title">Services & <span class="gradient-text">Expertise</span></h2>
             <p class="section-subtitle">Turning complex problems into elegant solutions</p>
+            <div class="handwritten" style="margin-top: 10px;">(And having fun doing it!)</div>
         </div>
         <div class="services-grid">
             <div class="service-card" data-tilt>

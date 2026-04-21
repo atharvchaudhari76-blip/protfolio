@@ -2,35 +2,42 @@
    DESIGN SYSTEM & CUSTOM PROPERTIES
    ============================================ */
 :root {
-    /* Color Palette - Deep Space */
-    --bg-primary: #020205;       /* Deep void black */
-    --bg-secondary: #0a0a14;     /* Dark space blue */
-    --bg-tertiary: #13111C;      /* Nebula shadow */
-    --bg-card: rgba(16, 16, 32, 0.4);
-    --bg-card-hover: rgba(26, 26, 52, 0.6);
-    --bg-glass: rgba(255, 255, 255, 0.03);
+    /* Color Palette - Human & Warm */
+    --bg-primary: #0f172a;       /* Deep slate blue/black */
+    --bg-secondary: #1e293b;     /* Slate blue secondary */
+    --bg-tertiary: #334155;      /* Slate blue tertiary */
+    --bg-card: rgba(30, 41, 59, 0.6);
+    --bg-card-hover: rgba(51, 65, 85, 0.8);
+    --bg-glass: rgba(255, 255, 255, 0.05);
     
-    --text-primary: #f8f8ff;     /* Starlight white */
-    --text-secondary: #b4b4c8;   /* Distant star grey */
-    --text-muted: #787890;
+    --text-primary: #f1f5f9;     /* Off-white */
+    --text-secondary: #cbd5e1;   /* Soft slate grey */
+    --text-muted: #94a3b8;
     
-    --accent-primary: #00f0ff;   /* Cyan neon */
-    --accent-secondary: #9d4edd; /* Nebula purple */
-    --accent-glow: rgba(0, 240, 255, 0.4);
-    --accent-purple-glow: rgba(157, 78, 221, 0.4);
+    --accent-primary: #ff5e62;   /* Warm Coral */
+    --accent-secondary: #ff9966; /* Sunset Amber */
+    --accent-tertiary: #6366f1;  /* Indigo */
+    --accent-glow: rgba(255, 94, 98, 0.4);
+    --accent-purple-glow: rgba(99, 102, 241, 0.4);
     
-    --gradient-primary: linear-gradient(135deg, #00f0ff 0%, #9d4edd 50%, #ff00c8 100%);
-    --gradient-accent: linear-gradient(135deg, #00f0ff 0%, #9d4edd 100%);
-    --gradient-card: linear-gradient(135deg, rgba(0, 240, 255, 0.08) 0%, rgba(157, 78, 221, 0.04) 100%);
-    --nebula-cyan: radial-gradient(circle at 20% 30%, rgba(0, 240, 255, 0.15) 0%, transparent 50%);
-    --nebula-purple: radial-gradient(circle at 80% 70%, rgba(157, 78, 221, 0.15) 0%, transparent 50%);
+    --gradient-primary: linear-gradient(135deg, #ff5e62 0%, #ff9966 100%);
+    --gradient-accent: linear-gradient(135deg, #ff5e62 0%, #6366f1 100%);
+    --gradient-card: linear-gradient(135deg, rgba(255, 94, 98, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
     
-    --border-color: rgba(255, 255, 255, 0.06);
-    --border-glow: rgba(0, 240, 255, 0.5);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-glow: rgba(255, 94, 98, 0.5);
+    
+    /* 3D Shadows (Claymorphism) */
+    --clay-shadow: 
+        inset 2px 2px 4px rgba(255, 255, 255, 0.1),
+        inset -2px -2px 4px rgba(0, 0, 0, 0.2),
+        8px 8px 20px rgba(0, 0, 0, 0.3);
+    --shadow-depth: 0 20px 40px rgba(0, 0, 0, 0.4);
     
     /* Typography */
-    --font-heading: 'Space Grotesk', sans-serif;
+    --font-heading: 'Outfit', sans-serif;
     --font-body: 'Inter', sans-serif;
+    --font-handwritten: 'Caveat', cursive;
     
     /* Spacing */
     --section-padding: 100px 0;
@@ -45,8 +52,8 @@
     /* Border Radius */
     --radius-sm: 8px;
     --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
+    --radius-lg: 20px;
+    --radius-xl: 32px;
     --radius-full: 9999px;
 }
 
@@ -124,12 +131,23 @@ ul {
     position: absolute;
     inset: 0;
     background: 
-        radial-gradient(circle at 20% 30%, rgba(0, 240, 255, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 80% 70%, rgba(157, 78, 221, 0.15) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(224, 170, 255, 0.05) 0%, transparent 60%);
+        radial-gradient(circle at 10% 20%, rgba(255, 94, 98, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(255, 153, 102, 0.05) 0%, transparent 60%);
     filter: blur(80px);
-    opacity: 0.7;
-    /* nebula-drift animation removed for a cleaner look */
+    opacity: 0.8;
+}
+
+/* Organic Blobs */
+.blob {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: var(--gradient-primary);
+    filter: blur(100px);
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    opacity: 0.15;
+    z-index: -1;
 }
 
 
@@ -332,6 +350,39 @@ ul {
     background-clip: text;
 }
 
+.handwritten {
+    font-family: var(--font-handwritten);
+    color: var(--accent-secondary);
+    font-size: 1.5rem;
+    transform: rotate(-3deg);
+    display: inline-block;
+}
+
+/* 3D Utilities */
+.clay-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--clay-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.depth-lift {
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.depth-lift:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: var(--shadow-depth);
+}
+
+.preserve-3d {
+    transform-style: preserve-3d;
+}
+
+.z-layer-1 { transform: translateZ(20px); }
+.z-layer-2 { transform: translateZ(40px); }
+.z-layer-3 { transform: translateZ(60px); }
+
 /* ============================================
    HERO SECTION
    ============================================ */
@@ -456,31 +507,29 @@ ul {
 .hero-visual {
     display: flex;
     justify-content: center;
-}
-
-.hero-card {
-    width: 100%;
-    max-width: 440px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
     position: relative;
 }
 
-.hero-card::before {
-    content: '';
-    position: absolute;
-    inset: -1px;
-    border-radius: var(--radius-lg);
-    padding: 1px;
-    background: linear-gradient(135deg, var(--accent-primary), transparent, var(--accent-secondary));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
+.avatar-container {
+    position: relative;
+    width: 320px;
+    height: 320px;
+    background: var(--gradient-card);
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--clay-shadow);
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    overflow: visible;
+}
+
+.hero-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.3));
 }
 
 .card-header {
@@ -686,6 +735,7 @@ ul {
     transition: all var(--transition-base);
     position: relative;
     overflow: hidden;
+    box-shadow: var(--clay-shadow);
 }
 
 .service-card::before {
@@ -1206,6 +1256,7 @@ ul {
     border-radius: var(--radius-lg);
     overflow: hidden;
     transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--clay-shadow);
 }
 
 .project-card.hidden-filter {
@@ -1598,6 +1649,33 @@ a.contact-method-value:hover {
 
 .delay-1 { animation-delay: 0.15s; }
 .delay-2 { animation-delay: 0.3s; }
+
+/* Click Stickers */
+.click-sticker {
+    position: fixed;
+    font-size: 2rem;
+    pointer-events: none;
+    z-index: 10000;
+    animation: sticker-pop 1s ease-out forwards;
+    user-select: none;
+}
+
+@keyframes sticker-pop {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    20% { transform: scale(1.5) rotate(10deg); opacity: 1; }
+    100% { transform: scale(1.2) translateY(-50px) rotate(-10deg); opacity: 0; }
+}
+
+@media (max-width: 768px) {
+    .avatar-container {
+        width: 240px;
+        height: 240px;
+    }
+    .floating-3d {
+        width: 60px;
+        height: 60px;
+    }
+}
 .delay-3 { animation-delay: 0.45s; }
 .delay-4 { animation-delay: 0.6s; }
 .delay-5 { animation-delay: 0.75s; }

@@ -44,6 +44,39 @@ document.addEventListener('DOMContentLoaded', function () {
     const particleContainer = document.getElementById('bgParticles');
     // Static background is now handled purely via CSS to remove JS overhead
 
+    // ----------------------------------------
+    // Mouse Parallax for Blobs & 3D Icons
+    // ----------------------------------------
+    document.addEventListener('mousemove', (e) => {
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+
+        const blobs = document.querySelectorAll('.blob');
+        blobs.forEach((blob, index) => {
+            const speed = (index + 1) * 20;
+            const xOffset = (x - 0.5) * speed;
+            const yOffset = (y - 0.5) * speed;
+            blob.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+        });
+    });
+
+    // ----------------------------------------
+    // Stickers Interaction
+    // ----------------------------------------
+    const stickers = ['⭐', '🔥', '🚀', '🎨', '💻', '✨'];
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('button, a')) return; // Don't block real clicks
+
+        const sticker = document.createElement('div');
+        sticker.className = 'click-sticker';
+        sticker.textContent = stickers[Math.floor(Math.random() * stickers.length)];
+        sticker.style.left = `${e.clientX}px`;
+        sticker.style.top = `${e.clientY}px`;
+        document.body.appendChild(sticker);
+
+        setTimeout(() => sticker.remove(), 1000);
+    });
+
 
     // ----------------------------------------
     // Navbar scroll effect
@@ -321,24 +354,41 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ----------------------------------------
-    // Improved Tilt effect
+    // Improved 3D Tilt effect
     // ----------------------------------------
-    document.querySelectorAll('[data-tilt]').forEach(card => {
+    document.querySelectorAll('[data-tilt], .avatar-container').forEach(card => {
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / centerY * -8;
-            const rotateY = (x - centerX) / centerX * 8;
+            const rotateX = (y - centerY) / centerY * -15;
+            const rotateY = (x - centerX) / centerX * 15;
+            
             card.style.transition = 'none';
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            
+            // Move internal elements for depth
+            const layers = card.querySelectorAll('.z-layer-1, .z-layer-2, .z-layer-3');
+            layers.forEach(layer => {
+                const depth = layer.classList.contains('z-layer-3') ? 40 : 
+                              layer.classList.contains('z-layer-2') ? 20 : 10;
+                const moveX = (x - centerX) / centerX * depth;
+                const moveY = (y - centerY) / centerY * depth;
+                layer.style.transform = `translateZ(${depth * 2}px) translate(${moveX}px, ${moveY}px)`;
+            });
         });
 
         card.addEventListener('mouseleave', () => {
             card.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
             card.style.transform = '';
+            
+            const layers = card.querySelectorAll('.z-layer-1, .z-layer-2, .z-layer-3');
+            layers.forEach(layer => {
+                layer.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+                layer.style.transform = '';
+            });
         });
     });
 });
