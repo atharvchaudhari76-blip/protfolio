@@ -15,27 +15,27 @@ const BottomNav = ({ activeView, setView, toggleSidebar }) => {
         return (
           <button
             key={item.id}
-            className={`nav-item ${activeView === item.id ? 'active' : ''}`}
+            className={`bottom-nav-item ${activeView === item.id ? 'active' : ''}`}
             onClick={() => setView(item.id)}
             aria-label={item.ariaLabel}
             aria-current={activeView === item.id ? 'page' : undefined}
             role="tab"
             tabIndex={activeView === item.id ? 0 : -1}
           >
-            <Icon size={24} className="nav-icon" aria-hidden="true" />
-            <span className="nav-label">{item.label}</span>
+            <Icon size={24} className="bottom-nav-icon" aria-hidden="true" />
+            <span className="bottom-nav-label">{item.label}</span>
           </button>
         );
       })}
       <button 
-        className="nav-item menu-item"
+        className="bottom-nav-item"
         onClick={toggleSidebar}
         aria-label="Toggle menu"
         role="tab"
         tabIndex={-1}
       >
-        <Menu size={24} className="nav-icon" aria-hidden="true" />
-        <span className="nav-label">Menu</span>
+        <Menu size={24} className="bottom-nav-icon" aria-hidden="true" />
+        <span className="bottom-nav-label">Menu</span>
       </button>
     </nav>
   );

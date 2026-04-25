@@ -116,6 +116,7 @@ html, body, #root {
   border-radius: var(--radius-lg);
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  min-height: 0;
 }
 
 .content-overflow-wrapper {
@@ -200,7 +201,7 @@ html, body, #root {
   display: none; 
 }
 
-.nav-item {
+.bottom-nav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -223,13 +224,13 @@ html, body, #root {
   min-height: 48px;
 }
 
-.nav-item .nav-icon {
+.bottom-nav-item .bottom-nav-icon {
   width: 24px;
   height: 24px;
   flex-shrink: 0;
 }
 
-.nav-label {
+.bottom-nav-label {
   display: block;
   white-space: nowrap;
   overflow: hidden;
@@ -237,20 +238,20 @@ html, body, #root {
   max-width: 100%;
 }
 
-.nav-item:active {
+.bottom-nav-item:active {
   transform: scale(0.95);
 }
 
-.nav-item.active { 
+.bottom-nav-item.active { 
   color: white;
 }
 
-.nav-item:hover {
+.bottom-nav-item:hover {
   color: #ffffff;
 }
 
 @supports (padding-bottom: max(0px)) {
-  .nav-item {
+  .bottom-nav-item {
     padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
   }
 }
@@ -325,7 +326,7 @@ input[type="range"]::-webkit-slider-runnable-track {
 @media (max-width: 768px) {
   :root {
     --player-height: 64px;
-    --bottom-nav-height: 58px;
+    --bottom-nav-height: calc(58px + env(safe-area-inset-bottom, 0px));
   }
 
   /* ===== APP LAYOUT ===== */
@@ -380,6 +381,7 @@ input[type="range"]::-webkit-slider-runnable-track {
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    min-height: 0;
   }
   .panel { border-radius: 0; border: none; }
 
@@ -539,7 +541,7 @@ input[type="range"]::-webkit-slider-runnable-track {
     gap: 0;
   }
 
-  .nav-item {
+  .bottom-nav-item {
     min-width: 48px;
     min-height: 52px;
     padding: 6px 8px;
@@ -551,13 +553,17 @@ input[type="range"]::-webkit-slider-runnable-track {
     color: var(--text-subdued);
     flex: 1;
     max-width: 90px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
-  .nav-item:active {
+  .bottom-nav-item:active {
     transform: scale(0.90);
   }
 
-  .nav-item::after {
+  .bottom-nav-item::after {
     content: '';
     position: absolute;
     top: 0;
@@ -571,15 +577,15 @@ input[type="range"]::-webkit-slider-runnable-track {
     transition: opacity 0.2s ease;
   }
 
-  .nav-item.active {
+  .bottom-nav-item.active {
     color: white;
   }
 
-  .nav-item.active::after {
+  .bottom-nav-item.active::after {
     opacity: 1;
   }
 
-  .nav-icon {
+  .bottom-nav-icon {
     width: 22px;
     height: 22px;
   }
