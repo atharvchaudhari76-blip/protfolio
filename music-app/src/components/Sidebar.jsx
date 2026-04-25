@@ -4,13 +4,22 @@ import { useAuth } from '../context/AuthContext';
 
 const Sidebar = ({ setView, activeView }) => {
   const { logout, user } = useAuth();
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
     };
+
+    // Detect iOS
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    setIsIOS(isIOSDevice);
+    
+    // Check if already installed
+    const isStandaloneMode = window.matchMedia('(display-mode: standalone)').matches;
+    setIsStandalone(isStandaloneMode);
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
@@ -25,10 +34,14 @@ const Sidebar = ({ setView, activeView }) => {
       deferredPrompt.userChoice.then((choiceResult) => {
         setDeferredPrompt(null);
       });
+    } else if (isIOS) {
+      alert("To install AesthetiCore on your iPhone:\n\n1. Tap the 'Share' button (the square with an arrow) at the bottom of Safari.\n2. Scroll down and tap 'Add to Home Screen'.\n\nThis will add AesthetiCore to your apps for a full-screen experience!");
     } else {
-      alert("Installation is not supported or already installed.");
+      alert("Installation is not supported on this browser. Try opening the site in Chrome or Safari!");
     }
   };
+
+  const showInstallButton = (deferredPrompt || (isIOS && !isStandalone));
 
   return (
     <div className="sidebar">
@@ -48,7 +61,7 @@ const Sidebar = ({ setView, activeView }) => {
           <Search size={24} />
           <span>Search</span>
         </button>
-        {deferredPrompt && (
+        {showInstallButton && (
           <div className="install-banner" style={{ padding: '8px 16px', marginTop: '8px' }}>
             <button
               className="pill-btn"
