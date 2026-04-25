@@ -35,9 +35,9 @@ const Sidebar = ({ setView, activeView }) => {
         setDeferredPrompt(null);
       });
     } else if (isIOS) {
-      alert("To install AesthetiCore on your iPhone:\n\n1. Tap the 'Share' button (the square with an arrow) at the bottom of Safari.\n2. Scroll down and tap 'Add to Home Screen'.\n\nThis will add AesthetiCore to your apps for a full-screen experience!");
+      alert("To install AesthetiCore on your iPhone:\n\n1. Tap the 'Share' button at the bottom of Safari.\n2. Tap 'Add to Home Screen'.");
     } else {
-      alert("Installation is not supported on this browser. Try opening the site in Chrome or Safari!");
+      alert("To install AesthetiCore:\n\n1. Tap the three dots (menu) in your browser.\n2. Tap 'Install App' or 'Add to Home Screen'.\n\nIf you don't see it, wait 5 seconds for the app to finish loading and try again!");
     }
   };
 

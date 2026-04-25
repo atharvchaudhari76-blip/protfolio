@@ -19,21 +19,30 @@ export default defineConfig({
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',
-        start_url: 'index.html',
+        start_url: '/portfolio/music/index.html',
+        scope: '/portfolio/music/',
         icons: [
           {
             src: 'https://cdn-icons-png.flaticon.com/512/3043/3043665.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any'
           },
           {
             src: 'https://cdn-icons-png.flaticon.com/512/3043/3043665.png',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any'
+          },
+          {
+            src: 'https://cdn-icons-png.flaticon.com/512/3043/3043665.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable'
           }
         ]
       }
     })
   ],
-  base: './',
+  base: '/portfolio/music/',
 })
