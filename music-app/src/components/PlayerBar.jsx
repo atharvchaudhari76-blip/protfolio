@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   SkipBack, Play, Pause, SkipForward, Volume2, 
-  VolumeX, Shuffle, Repeat, Music, Heart, Mic2, ListMusic, MonitorSpeaker
+  VolumeX, Shuffle, Repeat, Music, Heart, Mic2, ListMusic, MonitorSpeaker, Download
 } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
+import { downloadSong } from '../services/musicService';
 
 const PlayerBar = () => {
   const { 
@@ -221,6 +222,13 @@ const PlayerBar = () => {
 
       {/* Right Section: Utilities */}
       <div className="player-right">
+        <button 
+          className="utility-btn" 
+          title="Download" 
+          onClick={() => downloadSong(currentTrack)}
+        >
+          <Download size={16} />
+        </button>
         <button className="utility-btn"><Mic2 size={16} /></button>
         <button className="utility-btn"><ListMusic size={16} /></button>
         <button className="utility-btn"><MonitorSpeaker size={16} /></button>

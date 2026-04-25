@@ -65,7 +65,17 @@ export const searchMusic = async (query) => {
     const data = await response.json();
 
     if (data.status === 'SUCCESS' && data.data?.results) {
-      return data.data.results.map(mapSongItem);
+      const mapped = data.data.results.map(mapSongItem);
+      
+      // Deduplicate songs by title and artist to fix duplicate UI issues
+      const seen = new Set();
+      return mapped.filter(song => {
+        // Create normalized key "title-artist"
+        const key = `${song.title.toLowerCase().trim()}-${song.artist.split(',')[0].toLowerCase().trim()}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
     }
     return [];
   } catch (error) {
@@ -133,6 +143,72 @@ export const getRecommendations = async (song) => {
   } catch (error) {
     console.error('Failed to get recommendations:', error);
     return [];
+  }
+};
+
+export const getHomeSuggestions = async (searchTerms) => {
+  if (!searchTerms || searchTerms.length === 0) {
+    return null;
+  }
+  
+  const categories = [];
+  // Use up to 4 recent terms to build personalized sections
+  const termsToUse = searchTerms.slice(0, 4);
+  
+  for (const term of termsToUse) {
+    try {
+      const results = await searchMusic(term);
+      const filtered = results.filter(song => {
+        if (!song.streamUrl) return false;
+        const lower = song.title.toLowerCase();
+        const badKeywords = ['instrumental', 'karaoke', 'ringtone', 'bgm'];
+        return !badKeywords.some(k => lower.includes(k));
+      });
+      
+      // Ensure we have enough tracks to make a section look good
+      if (filtered.length >= 4) {
+        categories.push({
+          id: `suggestion-${term}`,
+          title: `Inspired by "${term}"`,
+          tracks: filtered.slice(0, 6)
+        });
+      }
+    } catch (err) {
+      console.error(`Failed to fetch suggestions for: ${term}`, err);
+    }
+  }
+  
+  return categories.length > 0 ? categories : null;
+};
+
+export const downloadSong = async (song) => {
+  if (!song || !song.streamUrl) {
+    alert("This song is not available for download.");
+    return;
+  }
+  try {
+    const response = await fetch(song.streamUrl);
+    if (!response.ok) throw new Error("Network response was not ok");
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    // JioSaavn usually returns AAC audio
+    a.download = `${song.title} - ${song.artist}.aac`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("Direct download failed, attempting fallback:", err);
+    // Fallback: open in new tab
+    const a = document.createElement('a');
+    a.href = song.streamUrl;
+    a.target = '_blank';
+    a.download = `${song.title} - ${song.artist}.aac`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 };
 

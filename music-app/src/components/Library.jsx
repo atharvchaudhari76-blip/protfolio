@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Plus, Play, MoreHorizontal, Heart, Music2, Clock } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
 
-const Library = () => {
+const Library = ({ setView }) => {
   const { library, playlists, createPlaylist, playTrack, addToPlaylist } = useAudio();
   const [activeMenuTrackId, setActiveMenuTrackId] = useState(null);
 
@@ -118,7 +118,7 @@ const Library = () => {
             <div className="empty-state">
               <Heart size={48} className="empty-icon" />
               <p>Songs you like will appear here</p>
-              <button className="pill-btn" onClick={() => window.location.hash = '#home'}>Find some songs</button>
+              <button className="pill-btn" onClick={() => setView ? setView('home') : null}>Find some songs</button>
             </div>
           ) : (
             library.map((track, index) => (

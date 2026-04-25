@@ -21,7 +21,7 @@ function App() {
     switch (activeView) {
       case 'home': return <Home />;
       case 'search': return <Search />;
-      case 'library': return <Library />;
+      case 'library': return <Library setView={setActiveView} />;
       default: return <Home />;
     }
   };

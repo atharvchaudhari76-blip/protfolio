@@ -1,0 +1,10 @@
+{
+  "name": "portfolio-flask",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "python main.py",
+    "freeze": "python freeze.py",
+    "restore": "git checkout HEAD -- templates/base.html templates/index.html static/style.css static/script.js",
+    "status": "git status"
+  }
+}

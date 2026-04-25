@@ -748,6 +748,82 @@
   color: var(--text-subdued);
 }
 
+.search-landing-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.section-header-flex {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.section-header-flex .section-title {
+  margin-bottom: 0;
+}
+
+.clear-history-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-subdued);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clear-history-btn:hover {
+  color: var(--text-base);
+  text-decoration: underline;
+}
+
+.history-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.history-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #242424;
+  padding: 8px 16px;
+  border-radius: 500px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-base);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.history-chip:hover {
+  background: #2a2a2a;
+  border-color: rgba(255,255,255,0.1);
+  transform: translateY(-1px);
+}
+
+.remove-chip-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-subdued);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  margin-left: 4px;
+}
+
+.remove-chip-btn:hover {
+  color: var(--text-base);
+  background: rgba(255,255,255,0.1);
+}
+
 .browse-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -769,11 +845,13 @@
 }
 
 .browse-card h3 {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
   color: white;
   margin: 0;
   word-wrap: break-word;
+  line-height: 1.2;
+  padding-right: 8px;
 }
 
 .empty-state {

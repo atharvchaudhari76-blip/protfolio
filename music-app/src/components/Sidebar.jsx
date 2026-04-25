@@ -1,9 +1,34 @@
-import React from 'react';
-import { Home, Search, Library, Plus, ArrowRight, LogOut } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Home, Search, Library, Plus, ArrowRight, LogOut, Download } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Sidebar = ({ setView, activeView }) => {
   const { logout, user } = useAuth();
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        setDeferredPrompt(null);
+      });
+    } else {
+      alert("Installation is not supported or already installed.");
+    }
+  };
 
   return (
     <div className="sidebar">
@@ -23,6 +48,16 @@ const Sidebar = ({ setView, activeView }) => {
           <Search size={24} />
           <span>Search</span>
         </button>
+        {deferredPrompt && (
+          <button
+            className="nav-item"
+            onClick={handleInstallClick}
+            style={{ color: 'var(--accent-primary)' }}
+          >
+            <Download size={24} />
+            <span>Install App</span>
+          </button>
+        )}
       </div>
 
       {/* Block 2: Your Library */}
@@ -52,29 +87,29 @@ const Sidebar = ({ setView, activeView }) => {
             <p>We'll keep you updated on new episodes</p>
             <button className="pill-btn" onClick={() => setView('search')}>Browse podcasts</button>
           </div>
-        </div>
 
-        <div className="sidebar-footer">
-          <div className="user-profile">
-            <div className="user-info">
-              <span className="user-name">{user?.name || 'User'}</span>
+          <div className="sidebar-footer">
+            <div className="user-profile">
+              <div className="user-info">
+                <span className="user-name">{user?.name || 'User'}</span>
+              </div>
+              <button className="logout-btn" onClick={logout} title="Logout">
+                <LogOut size={20} />
+                <span>Logout</span>
+              </button>
             </div>
-            <button className="logout-btn" onClick={logout} title="Logout">
-              <LogOut size={20} />
-              <span>Logout</span>
+            <div className="footer-links">
+              <a href="#">Legal</a>
+              <a href="#">Safety & Privacy Center</a>
+              <a href="#">Privacy Policy</a>
+              <a href="#">Cookies</a>
+              <a href="#">About Ads</a>
+              <a href="#">Accessibility</a>
+            </div>
+            <button className="lang-btn">
+               English
             </button>
           </div>
-          <div className="footer-links">
-            <a href="#">Legal</a>
-            <a href="#">Safety & Privacy Center</a>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Cookies</a>
-            <a href="#">About Ads</a>
-            <a href="#">Accessibility</a>
-          </div>
-          <button className="lang-btn">
-             English
-          </button>
         </div>
       </div>
     </div>
