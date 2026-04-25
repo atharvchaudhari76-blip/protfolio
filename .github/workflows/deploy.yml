@@ -42,7 +42,7 @@ jobs:
           node-version: '20'
 
       - name: Install music app dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
         working-directory: music-app
 
       - name: Build music app
