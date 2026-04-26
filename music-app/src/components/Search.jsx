@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Search as SearchIcon } from 'lucide-react';
+import { Search as SearchIcon, Clock, X, Play } from 'lucide-react';
 import { searchMusic } from '../services/musicService';
 import { useAudio } from '../context/AudioContext';
-import SongCard from './SongCard';
 import { addToSearchHistory, getSearchHistory, removeFromSearchHistory, clearSearchHistory } from '../services/searchHistory';
-import { Clock, X } from 'lucide-react';
+
 const Search = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [history, setHistory] = useState([]);
-  const { playTrack } = useAudio();
+  const { playTrack, currentTrack, isPlaying } = useAudio();
 
   const browseCategories = [
-    { title: 'Music', color: '#E13300' },
-    { title: 'Podcasts', color: '#27856A' },
-    { title: 'Live Events', color: '#1E3264' },
-    { title: 'Made For You', color: '#8D67AB' },
-    { title: 'New Releases', color: '#7358FF' },
-    { title: 'Hip-Hop', color: '#BA5D07' },
-    { title: 'Pop', color: '#148A08' },
-    { title: 'Mood', color: '#D84000' },
+    { title: 'Electronic', color: 'linear-gradient(135deg, #8B5CF6, #6D28D9)', icon: '⚡' },
+    { title: 'Hip-Hop', color: 'linear-gradient(135deg, #F472B6, #DB2777)', icon: '🎤' },
+    { title: 'Pop', color: 'linear-gradient(135deg, #06B6D4, #0891B2)', icon: '🎵' },
+    { title: 'Rock', color: 'linear-gradient(135deg, #EF4444, #DC2626)', icon: '🎸' },
+    { title: 'Lo-Fi', color: 'linear-gradient(135deg, #10B981, #059669)', icon: '☁️' },
+    { title: 'Jazz', color: 'linear-gradient(135deg, #F59E0B, #D97706)', icon: '🎷' },
+    { title: 'Classical', color: 'linear-gradient(135deg, #3B82F6, #2563EB)', icon: '🎻' },
+    { title: 'R&B', color: 'linear-gradient(135deg, #EC4899, #BE185D)', icon: '💜' },
   ];
 
   useEffect(() => {
@@ -53,95 +52,101 @@ const Search = () => {
   }, [query]);
 
   return (
-    <div className="search-container">
-      <div className="search-header">
-        <div className="search-input-wrapper">
-          <SearchIcon size={20} className="search-icon" />
+    <div className="pulse-search animate-fade-in">
+      <header className="pulse-search-header">
+        <h1 className="pulse-page-title">Search</h1>
+        <div className="pulse-search-bar">
+          <SearchIcon size={20} className="pulse-search-icon" />
           <input
             type="text"
-            placeholder="What do you want to listen to?"
+            placeholder="Artists, songs, or podcasts"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+          {query && (
+            <button className="pulse-search-clear" onClick={() => setQuery('')}>
+              <X size={18} />
+            </button>
+          )}
         </div>
-      </div>
+      </header>
 
-      <div className="search-content">
+      <div className="pulse-search-content">
         {query ? (
           isLoading ? (
-            <div className="loading-state">Searching...</div>
+            <div className="pulse-loading">
+              <div className="pulse-loading-spinner"></div>
+              <span>Searching...</span>
+            </div>
           ) : results.length > 0 ? (
-            <div className="search-results">
-              <h2 className="section-title">Songs</h2>
-              <div className="song-grid">
-                {results.map((song) => (
-                  <SongCard 
-                    key={song.id} 
-                    song={song} 
-                    onClick={() => playTrack(song, results)} 
-                  />
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="empty-state">
-              <h2>No results found for "{query}"</h2>
-              <p>Please make sure your words are spelled correctly or use fewer or different keywords.</p>
-            </div>
-          )
-        ) : (
-          <div className="search-landing-content">
-            {history.length > 0 && (
-              <div className="search-history-section">
-                <div className="section-header-flex">
-                  <h2 className="section-title">Recent searches</h2>
-                  <button 
-                    className="clear-history-btn"
-                    onClick={() => {
-                      clearSearchHistory();
-                      setHistory([]);
-                    }}
+            <div className="pulse-results">
+              <h2 className="pulse-section-title">Results</h2>
+              <div className="pulse-results-list">
+                {results.map((song, index) => (
+                  <div
+                    key={song.id}
+                    className={`trending-row glass-card ${currentTrack?.id === song.id ? 'active-row' : ''}`}
+                    onClick={() => playTrack(song, results)}
                   >
-                    Clear all
-                  </button>
-                </div>
-                <div className="history-chips">
-                  {history.map((item, index) => (
-                    <div key={index} className="history-chip" onClick={() => setQuery(item.query)}>
-                      <Clock size={16} />
-                      <span>{item.query}</span>
-                      <button 
-                        className="remove-chip-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          removeFromSearchHistory(item.query);
-                          setHistory(getSearchHistory());
-                        }}
-                      >
-                        <X size={14} />
-                      </button>
+                    <div className="trending-image">
+                      <img src={song.thumbnail} alt={song.title} />
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="browse-section">
-              <h2 className="section-title">Browse all</h2>
-              <div className="browse-grid">
-                {browseCategories.map((cat, index) => (
-                  <div 
-                    key={index} 
-                    className="browse-card" 
-                    style={{ backgroundColor: cat.color }}
-                    onClick={() => setQuery(cat.title)}
-                  >
-                    <h3>{cat.title}</h3>
+                    <div className="trending-info">
+                      <h4 className="trending-title">{song.title}</h4>
+                      <p className="trending-artist">{song.artist}</p>
+                    </div>
+                    <button className="pulse-row-play">
+                      <Play size={18} fill="white" />
+                    </button>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="pulse-empty">
+              <SearchIcon size={48} strokeWidth={1} />
+              <h2>No results found</h2>
+              <p>Try different keywords or check spelling</p>
+            </div>
+          )
+        ) : (
+          <>
+            {history.length > 0 && (
+              <section className="pulse-history-section">
+                <div className="pulse-section-header">
+                  <h2 className="pulse-section-title">Trending Now</h2>
+                </div>
+                <div className="pulse-trending-cards">
+                  {history.slice(0, 2).map((item, index) => (
+                    <div key={index} className="pulse-trending-card glass-card" onClick={() => setQuery(item.query)}>
+                      <div className="pulse-trending-card-gradient"></div>
+                      <div className="pulse-trending-card-content">
+                        <h3>{item.query}</h3>
+                        <p>Based on your recent plays</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <section className="pulse-browse-section">
+              <h2 className="pulse-section-title">Browse All</h2>
+              <div className="pulse-browse-grid">
+                {browseCategories.map((cat, index) => (
+                  <div
+                    key={index}
+                    className="pulse-browse-card"
+                    style={{ background: cat.color }}
+                    onClick={() => setQuery(cat.title)}
+                  >
+                    <span className="pulse-browse-emoji">{cat.icon}</span>
+                    <h3>{cat.title}</h3>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </>
         )}
       </div>
     </div>
@@ -149,4 +154,3 @@ const Search = () => {
 };
 
 export default Search;
-

@@ -3,6 +3,7 @@ import Sidebar from './components/Sidebar';
 import Home from './components/Home';
 import Search from './components/Search';
 import Library from './components/Library';
+import NowPlaying from './components/NowPlaying';
 import PlayerBar from './components/PlayerBar';
 import AuthModal from './components/AuthModal';
 import BottomNav from './components/BottomNav';
@@ -22,14 +23,17 @@ function App() {
       case 'home': return <Home />;
       case 'search': return <Search />;
       case 'library': return <Library setView={setActiveView} />;
+      case 'nowplaying': return <NowPlaying goBack={() => setActiveView('home')} />;
       default: return <Home />;
     }
   };
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  const isNowPlaying = activeView === 'nowplaying';
+
   return (
-    <div className="app-container">
+    <div className={`app-container ${isNowPlaying ? 'np-mode' : ''}`}>
       <div 
         className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} 
         onClick={() => setIsSidebarOpen(false)} 
@@ -46,15 +50,15 @@ function App() {
       
       <main className="main-content">
         <div className="content-overflow-wrapper">
-          {/* Key prop triggers re-animation on view change */}
           <div key={activeView} className="animate-fade-in">
             {renderView()}
           </div>
         </div>
       </main>
 
-      <div className="player-wrapper">
-        <PlayerBar />
+      {/* Always render player-wrapper to maintain grid, but hide its content in NP mode */}
+      <div className="player-wrapper" style={isNowPlaying ? { display: 'none' } : {}}>
+        <PlayerBar onOpenNowPlaying={() => setActiveView('nowplaying')} />
       </div>
 
       <BottomNav 
@@ -67,5 +71,3 @@ function App() {
 }
 
 export default App;
-
-

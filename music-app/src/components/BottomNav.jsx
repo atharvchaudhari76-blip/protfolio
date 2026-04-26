@@ -1,42 +1,36 @@
 import React from 'react';
-import { Home, Search, Library, Menu } from 'lucide-react';
+import { Home, Search, LibraryBig, Disc } from 'lucide-react';
 
-const BottomNav = ({ activeView, setView, toggleSidebar }) => {
+const BottomNav = ({ activeView, setView }) => {
   const navItems = [
-    { id: 'home', icon: Home, label: 'Home', ariaLabel: 'Home page' },
-    { id: 'search', icon: Search, label: 'Search', ariaLabel: 'Search songs' },
-    { id: 'library', icon: Library, label: 'Library', ariaLabel: 'Your library' },
+    { id: 'home', icon: Home, label: 'Home' },
+    { id: 'search', icon: Search, label: 'Search' },
+    { id: 'library', icon: LibraryBig, label: 'Library' },
+    { id: 'nowplaying', icon: Disc, label: 'Now Playing' },
   ];
 
   return (
-    <nav className="bottom-nav" role="navigation" aria-label="Main navigation">
+    <nav className="pulse-bottom-nav" role="navigation" aria-label="Main navigation">
       {navItems.map((item) => {
         const Icon = item.icon;
+        const isActive = activeView === item.id;
         return (
           <button
             key={item.id}
-            className={`bottom-nav-item ${activeView === item.id ? 'active' : ''}`}
-            onClick={() => setView(item.id)}
-            aria-label={item.ariaLabel}
-            aria-current={activeView === item.id ? 'page' : undefined}
-            role="tab"
-            tabIndex={activeView === item.id ? 0 : -1}
+            className={`pulse-nav-item ${isActive ? 'active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setView(item.id);
+            }}
+            type="button"
+            style={{ touchAction: 'manipulation' }}
           >
-            <Icon size={24} className="bottom-nav-icon" aria-hidden="true" />
-            <span className="bottom-nav-label">{item.label}</span>
+            <Icon size={22} strokeWidth={isActive ? 2.5 : 1.5} />
+            <span>{item.label}</span>
           </button>
         );
       })}
-      <button 
-        className="bottom-nav-item"
-        onClick={toggleSidebar}
-        aria-label="Toggle menu"
-        role="tab"
-        tabIndex={-1}
-      >
-        <Menu size={24} className="bottom-nav-icon" aria-hidden="true" />
-        <span className="bottom-nav-label">Menu</span>
-      </button>
     </nav>
   );
 };

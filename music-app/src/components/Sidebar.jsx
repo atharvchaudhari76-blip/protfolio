@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Search, Library, Plus, ArrowRight, LogOut, Download } from 'lucide-react';
+import { Home, Search, Library, Plus, ArrowRight, LogOut, Download, Disc } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Sidebar = ({ setView, activeView }) => {
@@ -61,6 +61,13 @@ const Sidebar = ({ setView, activeView }) => {
         >
           <Search size={24} />
           <span>Search</span>
+        </button>
+        <button
+          className={`nav-item ${activeView === 'nowplaying' ? 'active' : ''}`}
+          onClick={() => setView('nowplaying')}
+        >
+          <Disc size={24} />
+          <span>Now Playing</span>
         </button>
         {showInstallButton && (
           <div className="install-banner" style={{ padding: '8px 16px', marginTop: '8px' }}>

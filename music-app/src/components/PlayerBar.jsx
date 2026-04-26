@@ -6,7 +6,7 @@ import {
 import { useAudio } from '../context/AudioContext';
 import { downloadSong } from '../services/musicService';
 
-const PlayerBar = () => {
+const PlayerBar = ({ onOpenNowPlaying }) => {
   const { 
     currentTrack, 
     isPlaying, 
@@ -116,8 +116,8 @@ const PlayerBar = () => {
 
   return (
     <div className="player-bar">
-      {/* Left Section: Track Info */}
-      <div className="player-left">
+      {/* Left Section: Track Info — click to open Now Playing */}
+      <div className="player-left" onClick={onOpenNowPlaying} style={{ cursor: 'pointer' }} title="Open Now Playing">
         <div className="player-art-container">
           {currentTrack.thumbnail ? (
             <img 
