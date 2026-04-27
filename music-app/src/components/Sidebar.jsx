@@ -71,13 +71,7 @@ const Sidebar = ({ setView, activeView }) => {
           <Search size={24} />
           <span>Search</span>
         </button>
-        <button
-          className={`nav-item ${activeView === 'nowplaying' ? 'active' : ''}`}
-          onClick={() => setView('nowplaying')}
-        >
-          <Disc size={24} />
-          <span>Now Playing</span>
-        </button>
+
         {showInstallButton && (
           <div className="install-banner" style={{ padding: '8px 16px', marginTop: '8px' }}>
             <button

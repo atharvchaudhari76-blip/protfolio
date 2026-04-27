@@ -6,7 +6,6 @@ const BottomNav = ({ activeView, setView }) => {
     { id: 'home', icon: Home, label: 'Home' },
     { id: 'search', icon: Search, label: 'Search' },
     { id: 'library', icon: LibraryBig, label: 'Library' },
-    { id: 'nowplaying', icon: Disc, label: 'Now Playing' },
   ];
 
   return (
