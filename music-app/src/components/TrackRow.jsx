@@ -60,6 +60,7 @@ const TrackRow = ({ track, index, queueContext, showIndex = true }) => {
     <div 
       className={`trending-row glass-card ${isActive ? 'active-row' : ''}`} 
       onClick={handlePlay}
+      style={{ position: 'relative', zIndex: showDropdown ? 9999 : 1 }}
     >
       {showIndex && (
         <span className={`trending-index ${isActive ? 'active-text' : ''}`}>
