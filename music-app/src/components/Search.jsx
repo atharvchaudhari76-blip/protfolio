@@ -3,6 +3,7 @@ import { Search as SearchIcon, Clock, X, Play } from 'lucide-react';
 import { searchMusic } from '../services/musicService';
 import { useAudio } from '../context/AudioContext';
 import { addToSearchHistory, getSearchHistory, removeFromSearchHistory, clearSearchHistory } from '../services/searchHistory';
+import TrackRow from './TrackRow';
 
 const Search = () => {
   const [query, setQuery] = useState('');
@@ -83,22 +84,13 @@ const Search = () => {
               <h2 className="pulse-section-title">Results</h2>
               <div className="pulse-results-list">
                 {results.map((song, index) => (
-                  <div
-                    key={song.id}
-                    className={`trending-row glass-card ${currentTrack?.id === song.id ? 'active-row' : ''}`}
-                    onClick={() => playTrack(song, results)}
-                  >
-                    <div className="trending-image">
-                      <img src={song.thumbnail} alt={song.title} />
-                    </div>
-                    <div className="trending-info">
-                      <h4 className="trending-title">{song.title}</h4>
-                      <p className="trending-artist">{song.artist}</p>
-                    </div>
-                    <button className="pulse-row-play">
-                      <Play size={18} fill="white" />
-                    </button>
-                  </div>
+                  <TrackRow 
+                    key={song.id} 
+                    track={song} 
+                    index={index} 
+                    queueContext={results} 
+                    showIndex={false}
+                  />
                 ))}
               </div>
             </div>

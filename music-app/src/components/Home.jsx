@@ -3,6 +3,7 @@ import { getTrending, getHomeSuggestions } from '../services/musicService';
 import { getRecentSearchTerms } from '../services/searchHistory';
 import { useAudio } from '../context/AudioContext';
 import SongCard from './SongCard';
+import TrackRow from './TrackRow';
 import { Play, Heart, MoreVertical } from 'lucide-react';
 
 const Home = () => {
@@ -128,20 +129,12 @@ const Home = () => {
               <h3 className="section-title">{categories[2].title}</h3>
               <div className="trending-list">
                 {categories[2].tracks.map((song, index) => (
-                  <div key={song.id} className={`trending-row glass-card ${currentTrack?.id === song.id ? 'active-row' : ''}`} onClick={() => playTrack(song, categories[2].tracks)}>
-                    <span className={`trending-index ${currentTrack?.id === song.id ? 'active-text' : ''}`}>{(index + 1).toString().padStart(2, '0')}</span>
-                    <div className="trending-image">
-                      <img src={song.thumbnail} alt={song.title} />
-                    </div>
-                    <div className="trending-info">
-                      <h4 className="trending-title">{song.title}</h4>
-                      <p className="trending-artist">{song.artist} • 3:45</p>
-                    </div>
-                    <div className="trending-actions">
-                       <Heart size={20} className="action-icon" />
-                       <MoreVertical size={20} className="action-icon" />
-                    </div>
-                  </div>
+                  <TrackRow 
+                    key={song.id} 
+                    track={song} 
+                    index={index} 
+                    queueContext={categories[2].tracks} 
+                  />
                 ))}
               </div>
             </section>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Play, Heart, Music2, MoreVertical, X, Check } from 'lucide-react';
 import { useAudio } from '../context/AudioContext';
+import TrackRow from './TrackRow';
 
 const Library = ({ setView }) => {
   const { library, playlists, createPlaylist, playTrack, addToPlaylist, currentTrack } = useAudio();
@@ -144,25 +145,12 @@ const Library = ({ setView }) => {
           <h3 className="pulse-section-title">Recently Liked</h3>
           <div className="trending-list">
             {library.slice(0, 8).map((track, index) => (
-              <div
-                key={track.id}
-                className={`trending-row glass-card ${currentTrack?.id === track.id ? 'active-row' : ''}`}
-                onClick={() => playTrack(track, library)}
-              >
-                <span className={`trending-index ${currentTrack?.id === track.id ? 'active-text' : ''}`}>
-                  {(index + 1).toString().padStart(2, '0')}
-                </span>
-                <div className="trending-image">
-                  <img src={track.thumbnail} alt={track.title} />
-                </div>
-                <div className="trending-info">
-                  <h4 className="trending-title">{track.title}</h4>
-                  <p className="trending-artist">{track.artist}</p>
-                </div>
-                <div className="trending-actions">
-                  <Heart size={18} className="action-icon" fill="var(--accent-primary)" stroke="var(--accent-primary)" />
-                </div>
-              </div>
+              <TrackRow 
+                key={track.id} 
+                track={track} 
+                index={index} 
+                queueContext={library} 
+              />
             ))}
           </div>
         </section>
