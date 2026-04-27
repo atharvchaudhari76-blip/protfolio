@@ -50,14 +50,7 @@ const Home = () => {
 
   return (
     <div className="home-view animate-fade-in">
-      <header className="home-top-header">
-        <div className="home-top-left">
-          <div className="user-avatar-sm">
-             <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" alt="User" />
-          </div>
-          <h1 className="home-logo-title">Pulse</h1>
-        </div>
-      </header>
+
 
       {isLoading ? (
         <div className="loading-state">Loading your music...</div>
