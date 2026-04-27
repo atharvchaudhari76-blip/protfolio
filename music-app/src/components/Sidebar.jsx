@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Home, Search, Library, Plus, ArrowRight, LogOut, Download, Disc } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useAudio } from '../context/AudioContext';
 
 const Sidebar = ({ setView, activeView }) => {
   const { logout, user } = useAuth();
+  const { createPlaylist } = useAudio();
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  const handleCreatePlaylist = () => {
+    const name = window.prompt("Playlist name:");
+    if (name) {
+      createPlaylist(name);
+    }
+  };
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
@@ -102,7 +111,7 @@ const Sidebar = ({ setView, activeView }) => {
             <span>Your Library</span>
           </button>
           <div className="library-actions">
-            <button className="icon-btn" title="Create playlist" onClick={() => alert('Playlist created successfully!')}><Plus size={20} /></button>
+            <button className="icon-btn" title="Create playlist" onClick={handleCreatePlaylist}><Plus size={20} /></button>
             <button className="icon-btn" title="Show more"><ArrowRight size={20} /></button>
           </div>
         </div>
@@ -111,7 +120,7 @@ const Sidebar = ({ setView, activeView }) => {
           <div className="sidebar-card">
             <h4>Create your first playlist</h4>
             <p>It's easy, we'll help you</p>
-            <button className="pill-btn" onClick={() => alert('Playlist created successfully!')}>Create playlist</button>
+            <button className="pill-btn" onClick={handleCreatePlaylist}>Create playlist</button>
           </div>
           <div className="sidebar-card">
             <h4>Let's find some podcasts to follow</h4>
