@@ -226,32 +226,30 @@ export const downloadSong = async (song) => {
   }
 
   try {
-    const response = await fetch(song.streamUrl);
+    const response = await fetch(song.streamUrl, { mode: 'cors' });
     if (!response.ok) throw new Error("Network response was not ok");
     
-    // Force application/octet-stream to trigger a download prompt on mobile
     const originalBlob = await response.blob();
-    const blob = new Blob([originalBlob], { type: 'application/octet-stream' });
-    
+    // Use the original blob's type if possible, or fallback to audio/mpeg or audio/mp4
+    const blob = new Blob([originalBlob], { type: originalBlob.type || 'audio/mp4' });
     const url = window.URL.createObjectURL(blob);
     
     if (isMobile && mobileTab) {
-      // Redirect the synchronously opened tab to the blob URL
+      toast.innerText = "Download ready! Tap 'Download' in the new tab.";
       mobileTab.location.href = url;
-      // Note: We don't automatically close the tab on mobile because iOS needs it open to show the download prompt
     } else {
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${song.title} - ${song.artist}.m4a`; // m4a is better handled by iOS
+      a.download = `${song.title.replace(/[\\/:"*?<>|]/g, '')} - ${song.artist.replace(/[\\/:"*?<>|]/g, '')}.m4a`;
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
-      setTimeout(() => window.URL.revokeObjectURL(url), 2000);
+      setTimeout(() => window.URL.revokeObjectURL(url), 5000);
     }
     
     toast.innerText = "Download starting!";
-    toast.style.background = '#28a745'; // Green success color
+    toast.style.background = '#28a745'; 
     toast.style.color = '#fff';
     
     setTimeout(() => {
@@ -262,19 +260,20 @@ export const downloadSong = async (song) => {
     }, 2500);
 
   } catch (err) {
-    console.error("Direct download failed, attempting fallback:", err);
-    toast.innerText = "Opening file directly...";
+    console.error("Direct download failed:", err);
+    toast.innerText = "Opening file directly for download...";
+    toast.style.background = '#ffc107';
+    toast.style.color = '#000';
     
-    setTimeout(() => { 
-      if (document.body.contains(toast)) document.body.removeChild(toast); 
-    }, 2000);
-    
-    // Fallback: On mobile, async window.open is blocked by popup blockers.
     if (isMobile && mobileTab) {
       mobileTab.location.href = song.streamUrl;
     } else {
       window.location.href = song.streamUrl;
     }
+
+    setTimeout(() => { 
+      if (document.body.contains(toast)) document.body.removeChild(toast); 
+    }, 4000);
   }
 };
 

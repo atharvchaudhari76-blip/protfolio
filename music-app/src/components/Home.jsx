@@ -10,7 +10,44 @@ const Home = () => {
   const [categories, setCategories] = useState([]);
   const [featuredSong, setFeaturedSong] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const { playTrack, currentTrack, isPlaying } = useAudio();
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Stash the event so it can be triggered later.
+      setDeferredPrompt(e);
+      // Update UI notify the user they can install the PWA
+      setShowInstallPrompt(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // If already in standalone mode, don't show the prompt
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setShowInstallPrompt(false);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstall = async () => {
+    if (deferredPrompt) {
+      // Show the install prompt
+      deferredPrompt.prompt();
+      // Wait for the user to respond to the prompt
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to the install prompt: ${outcome}`);
+      // We've used the prompt, and can't use it again, so clear it
+      setDeferredPrompt(null);
+      setShowInstallPrompt(false);
+    }
+  };
 
   useEffect(() => {
     const fetchMusic = async () => {
@@ -129,6 +166,20 @@ const Home = () => {
                     queueContext={categories[2].tracks} 
                   />
                 ))}
+              </div>
+            </section>
+          )}
+
+          {showInstallPrompt && (
+            <section className="home-section install-section">
+              <div className="install-banner-wide glass-card">
+                <div className="install-content">
+                  <h3>Get the AesthetiCore App</h3>
+                  <p>Install our app for a full-screen, premium experience with offline-like performance.</p>
+                </div>
+                <button className="pill-btn neon-glow" onClick={handleInstall}>
+                  Install Now
+                </button>
               </div>
             </section>
           )}

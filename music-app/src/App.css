@@ -1078,3 +1078,46 @@
   }
 }
 
+
+/* Install Banner */
+.install-section {
+  margin-top: 40px;
+  padding-bottom: 20px;
+}
+
+.install-banner-wide {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32px;
+  background: linear-gradient(135deg, rgba(30, 215, 96, 0.1) 0%, rgba(15, 15, 15, 0.8) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  gap: 24px;
+}
+
+.install-content h3 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text-bright);
+}
+
+.install-content p {
+  color: var(--text-subdued);
+  font-size: 14px;
+  max-width: 500px;
+}
+
+@media (max-width: 768px) {
+  .install-banner-wide {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px;
+  }
+  
+  .install-banner-wide .pill-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

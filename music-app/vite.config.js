@@ -11,7 +11,7 @@ export default defineConfig({
       devOptions: {
         enabled: true
       },
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
+      includeAssets: ['favicon.svg', 'logo.png'],
       manifest: {
         name: 'AesthetiCore Music',
         short_name: 'AesthetiCore',
@@ -19,8 +19,8 @@ export default defineConfig({
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',
-        start_url: '/portfolio/music/index.html',
-        scope: '/portfolio/music/',
+        start_url: '.',
+        scope: '.',
         icons: [
           {
             src: 'logo.png',
